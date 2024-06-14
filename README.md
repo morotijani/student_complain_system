@@ -1,2 +1,2 @@
-# student_complain_system
+# student_complaint_system
 A student complaint system
