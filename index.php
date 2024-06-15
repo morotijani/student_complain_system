@@ -164,7 +164,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Make a Complain</h1>
@@ -188,7 +188,7 @@
                         <div class="mb-3">
                             <label for="fileupload" class="form-label">Document (optional)</label>
                             <input type="file" class="form-control" id="fileupload" name="fileupload">
-                            <div class="text-sm">Upload any document if available for more evidence</div>
+                            <div class="form-text">Upload any document if available for more evidence</div>
                         </div>
                         <div class="mb-3">
                           <label for="message" class="form-label">Message</label>
@@ -198,7 +198,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary">Send complain</button>
                 </div>
             </div>
         </div>
