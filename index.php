@@ -1,3 +1,44 @@
+<?php
+
+if (isset($_POST['submit'])) {
+
+    $file = $_FILES['file'];
+    $fileName = $_FILES['file']['name'];
+    $fileTmpName = $_FILES['file']['tmp_name'];
+    $fileSize = $_FILES['file']['size'];
+    $fileError = $_FILES['file']['error'];
+    $fileType = $_FILES['file']['type'];
+
+    $fileExt = explode('.', $fileName);
+    $fileActualExt = strtolower(end($fileExt));
+
+    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+
+    if (in_array($fileActalExt, $allowed)) {
+        // code...
+        if ($fileError === 0) {
+            if ($fileSize < 1000000) {
+                // code...
+                $fileNewName = uniqid('', true) . "." . $fileActualExt;
+                $fileDestination = 'dist/media/uploads/' . $fileNewName;
+
+                move_uploaded_file($fileTmpName, $fileDestination);
+
+
+            } else {
+                echo "Your file is too big!";
+            }
+        } else {
+            echo "There was an error uploading your file!"
+        }
+    } else {
+        echo "You cannot upload files of this type!";
+    }
+}
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
     <head>
@@ -171,7 +212,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="student_id" class="form-label">Student ID</label>
                             <input type="email" class="form-control" id="student_id" name="student_id" placeholder="">
@@ -186,8 +227,8 @@
                         </div>
                         <hr>
                         <div class="mb-3">
-                            <label for="fileupload" class="form-label">Document (optional)</label>
-                            <input type="file" class="form-control" id="fileupload" name="fileupload">
+                            <label for="file" class="form-label">Document (optional)</label>
+                            <input type="file" class="form-control" id="file" name="file">
                             <div class="form-text">Upload any document if available for more evidence</div>
                         </div>
                         <div class="mb-3">
@@ -198,7 +239,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Send complain</button>
+                    <button type="submit" name="submit" class="btn btn-primary">Send complain</button>
                 </div>
             </div>
         </div>
