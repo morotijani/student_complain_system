@@ -30,18 +30,18 @@
 
 	
 
- 	require BASEURL.'vendor/autoload.php';
+ 	require BASEURL . 'vendor/autoload.php';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
  	// ADMIN LOGIN
- 	if (isset($_SESSION['MFAdmin'])) {
- 		$admin_id = $_SESSION['MFAdmin'];
+ 	if (isset($_SESSION['ComAdmin'])) {
+ 		$admin_id = $_SESSION['ComAdmin'];
  		$data = array(
  			':admin_id' => $admin_id
  		);
  		$sql = "
- 			SELECT * FROM mifo_admin 
+ 			SELECT * FROM admin 
  			WHERE admin_id = :admin_id 
  			LIMIT 1
  		";
@@ -60,23 +60,23 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
  	// USER LOGIN
- 	if (isset($_SESSION['MFUser'])) {
- 		$user_id = $_SESSION['MFUser'];
+ 	if (isset($_SESSION['ComStudent'])) {
+ 		$user_id = $_SESSION['ComStudent'];
  		$data = array(
- 			':user_id' => $user_id,
- 			':user_trash' => 0
+ 			':id' => $user_id,
+ 			':trash' => 0
  		);
  		$sql = "
- 			SELECT * FROM mifo_user 
- 			WHERE user_id = :user_id 
- 			AND user_trash = :user_trash 
+ 			SELECT * FROM students 
+ 			WHERE id = :id 
+ 			AND trash = :trash 
  			LIMIT 1
  		";
  		$statement = $conn->prepare($sql);
  		$statement->execute($data);
  		if ($statement->rowCount() > 0) {
 	 		foreach ($statement->fetchAll() as $user_data) {
-	 			$fn = explode(' ', $user_data['user_fullname']);
+	 			$fn = explode(' ', $user_data['fullname']);
 	 			$user_data['first'] = ucwords($fn[0]);
 	 			$user_data['last'] = '';
 	 			if (count($fn) > 1) {
@@ -84,12 +84,10 @@
 	 			}
 	 		}
  		} else {
- 			unset($_SESSION['MFUser']);
- 			redirect(PROOT . 'shop/index');
+ 			unset($_SESSION['ComStudent']);
+ 			redirect(PROOT . 'board');
  		}
 
  	}
 
 
-
-?>

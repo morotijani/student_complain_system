@@ -267,6 +267,39 @@ function getTitle() {
 
 
 
+// Sessions For login
+function studentLogin($stud_id) {
+	$_SESSION['ComStudent'] = $stud_id;
+	global $conn;
+	$data = array(
+		':updatedAt' => date("Y-m-d H:i:s"),
+		':id' => (int)$stud_id
+	);
+	$query = "
+		UPDATE students 
+		SET updatedAt = :updatedAt 
+		WHERE id = :id";
+	$statement = $conn->prepare($query);
+	$result = $statement->execute($data);
+	if (isset($result)) {
+		$_SESSION['flash_success'] = 'You are now logged in!';
+		redirect(PROOT . 'board');
+	}
+}
+
+function student_is_logged_in(){
+	if (isset($_SESSION['ComStudent']) && $_SESSION['ComStudent'] > 0) {
+		return true;
+	}
+	return false;
+}
+
+// Redirect student if !logged in
+function student_login_redirect($url = 'login') {
+	$_SESSION['flash_error'] = 'You must be logged in to access that page.';
+	redirect($url);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -275,26 +308,26 @@ function getTitle() {
 
 // Sessions For login
 function adminLogin($admin_id) {
-	$_SESSION['MFAdmin'] = $admin_id;
+	$_SESSION['ComAdmin'] = $admin_id;
 	global $conn;
 	$data = array(
 		':admin_last_login' => date("Y-m-d H:i:s"),
 		':admin_id' => (int)$admin_id
 	);
 	$query = "
-		UPDATE mifo_admin 
+		UPDATE admin 
 		SET admin_last_login = :admin_last_login 
 		WHERE admin_id = :admin_id";
 	$statement = $conn->prepare($query);
 	$result = $statement->execute($data);
 	if (isset($result)) {
 		$_SESSION['flash_success'] = '<div class="text-center" id="temporary">You are now logged in!</div>';
-		header('Location: index');
+		redirect(PROOT . 'index');
 	}
 }
 
 function admin_is_logged_in(){
-	if (isset($_SESSION['MFAdmin']) && $_SESSION['MFAdmin'] > 0) {
+	if (isset($_SESSION['ComAdmin']) && $_SESSION['ComAdmin'] > 0) {
 		return true;
 	}
 	return false;
@@ -303,7 +336,7 @@ function admin_is_logged_in(){
 // Redirect admin if !logged in
 function admn_login_redirect($url = 'login') {
 	$_SESSION['flash_error'] = '<div class="text-center" id="temporary" style="margin-top: 60px;">You must be logged in to access that page.</div>';
-	header('Location: '.$url);
+	redirect(PROOT . $url);
 }
 
 // Redirect admin if do not have permission
@@ -1259,6 +1292,3 @@ function getall_brands($limit) {
     $statement->execute();
     return $statement->fetchAll();
 }
-
-
-?>
