@@ -7,6 +7,12 @@ if (!student_is_logged_in()) {
 }
 
 if (isset($_POST['submit'])) {
+    $complaint_date = sanitize($_POST['complaint_date']);
+    $message = sanitize($_POST['message']);
+
+    if (empty($_FILES)) {
+        exit('$_FILES is empty - is file_uploads set to "Off" in php.ini?');
+    }
 
     $file = $_FILES['file'];
     $fileName = $_FILES['file']['name'];
@@ -270,26 +276,18 @@ if (isset($_POST['submit'])) {
                 <div class="modal-body">
                     <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="student_id" class="form-label">Student ID</label>
-                            <input type="email" class="form-control" id="student_id" name="student_id" placeholder="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="student_email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
-                        </div>
-                        <div class="mb-3">
-                            <label for="student_name" class="form-label">Student Name</label>
-                            <input type="email" class="form-control" id="student_name" name="student_name" placeholder="">
-                        </div>
-                        <hr>
-                        <div class="mb-3">
-                            <label for="file" class="form-label">Document (optional)</label>
-                            <input type="file" class="form-control" id="file" name="file">
-                            <div class="form-text">Upload any document if available for more evidence</div>
+                            <label for="complaint_date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="">
+                            <div class="form-text">date of the event happening</div>
                         </div>
                         <div class="mb-3">
                           <label for="message" class="form-label">Message</label>
                           <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Document (optional)</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                            <div class="form-text">Upload any document if available for more evidence</div>
                         </div>
                     </form>
                 </div>

@@ -7,43 +7,6 @@ require_once ("db_connection/conn.php");
 // }
 
 
-if (isset($_POST['submit'])) {
-
-    $file = $_FILES['file'];
-    $fileName = $_FILES['file']['name'];
-    $fileTmpName = $_FILES['file']['tmp_name'];
-    $fileSize = $_FILES['file']['size'];
-    $fileError = $_FILES['file']['error'];
-    $fileType = $_FILES['file']['type'];
-
-    $fileExt = explode('.', $fileName);
-    $fileActualExt = strtolower(end($fileExt));
-
-    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
-
-    if (in_array($fileActalExt, $allowed)) {
-        // code...
-        if ($fileError === 0) {
-            if ($fileSize < 1000000) {
-                // code...
-                $fileNewName = uniqid('', true) . "." . $fileActualExt;
-                $fileDestination = 'dist/media/uploads/' . $fileNewName;
-
-                move_uploaded_file($fileTmpName, $fileDestination);
-
-
-            } else {
-                echo "Your file is too big!";
-            }
-        } else {
-            echo "There was an error uploading your file!";
-        }
-    } else {
-        echo "You cannot upload files of this type!";
-    }
-}
-
-
 
 ?>
 <!DOCTYPE html>
@@ -218,55 +181,13 @@ if (isset($_POST['submit'])) {
                     This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
                 </p>
                 <div class="d-inline-flex gap-2 mb-5">
-                <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="board">
                     Make a complaint
                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-                </button>
+                </a>
                 <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
                     Complaint status
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Make a Complain</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="student_id" class="form-label">Student ID</label>
-                            <input type="email" class="form-control" id="student_id" name="student_id" placeholder="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="student_email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
-                        </div>
-                        <div class="mb-3">
-                            <label for="student_name" class="form-label">Student Name</label>
-                            <input type="email" class="form-control" id="student_name" name="student_name" placeholder="">
-                        </div>
-                        <hr>
-                        <div class="mb-3">
-                            <label for="file" class="form-label">Document (optional)</label>
-                            <input type="file" class="form-control" id="file" name="file">
-                            <div class="form-text">Upload any document if available for more evidence</div>
-                        </div>
-                        <div class="mb-3">
-                          <label for="message" class="form-label">Message</label>
-                          <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="submit" class="btn btn-primary">Send complain</button>
-                </div>
             </div>
         </div>
     </div>
