@@ -2,9 +2,9 @@
 
 require_once ("db_connection/conn.php");
 
-if (student_is_logged_in()) {
-    redirect(PROOT . 'board');
-}
+// if (student_is_logged_in()) {
+//    redirect(PROOT . 'board');
+// }
 
 
 if (isset($_POST['submit'])) {
@@ -194,22 +194,23 @@ if (isset($_POST['submit'])) {
             <nav>
                 <ul class="nav justify-content-center">
                     <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
-                    <li class="nav-item"><a href="signup" class="nav-link px-2 text-body-secondary">Signup</a></li>
-                    <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
                     <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="board" class="nav-link px-2 text-body-secondary">Complaints</a></li>
                     <?php if (student_is_logged_in()): ?>
                     <li class="nav-item">
-                        <a href="#" class="nav-link px-2 text-body-secondary">
-                            name
+                        <a href="profile" class="nav-link px-2 text-body-secondary">
+                            Hello <?= $user_data['first']; ?>!
                         </a>
                     </li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                    <?php else: ?>
+                    <li class="nav-item"><a href="signup" class="nav-link px-2 text-body-secondary">Signup</a></li>
+                    <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
                     <?php endif ?>
                 </ul>
             </nav>
         </div>
 
-        <div class="container my-5">
+        <div class="container my-2">
             <div class="p-5 text-center bg-body-tertiary rounded-3">
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>

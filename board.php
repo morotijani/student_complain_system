@@ -1,6 +1,5 @@
 <?php
 
-echo password_hash('password', PASSWORD_BCRYPT);
 require_once ("db_connection/conn.php");
 
 if (!student_is_logged_in()) {
@@ -193,11 +192,10 @@ if (isset($_POST['submit'])) {
         <div class="container">
             <nav>
                 <ul class="nav justify-content-center">
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Hi <?= $user_data['first']; ?>!</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
+                    <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="profile" class="nav-link px-2 text-body-secondary">Hi <?= $user_data['first']; ?>!</a></li>
+                    <li class="nav-item"><a href="logout" class="nav-link px-2 text-body-secondary">Logout</a></li>
                 </ul>
             </nav>
         </div>

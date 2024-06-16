@@ -1,9 +1,9 @@
 <?php 
 
-    require_once ("../db_connection/conn.php");
+    require_once ("db_connection/conn.php");
 
-    unset($_SESSION['MFAdmin']);
+    unset($_SESSION['ComStudent']);
 
-    header('Location: login');
+    redirect(PROOT . 'login');
 
 ?>
