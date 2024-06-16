@@ -195,35 +195,33 @@
             </nav>
         </div>
 
-        <div class="container my-5">
+        <div class="container my-2">
             <div class="p-5 text-center bg-body-tertiary rounded-3">
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
-                <p class="col-lg-8 mx-auto fs-5 text-muted">
-                  <?= $flash; ?>
-                    <form method="POST" action="login.php" id="admin_loginForm">
+                <form method="POST" action="login.php" id="admin_loginForm" class="col-lg-8 mx-auto fs-5 text-muted">
+                    <p >
+                        <?= $flash; ?>
+                        log into your account to lodge a complain or check your complain status. 
                         <code class="mb-1"><?= $error; ?></code>
-                        <img class="mb-4" src="<?= PROOT; ?>assets/media/logo/LOGO-NBG-1.1.png" alt="" width="200" height="100">
-                        <div class="form-floating">
-                            <input type="email" class="form-control" id="admin_email" name="admin_email" autocomplete="nope">
-                            <label for="admin_email">Email address</label>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
+                            <label for="student_email">Email address</label>
                         </div>
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="admin_password" name="admin_password" placeholder="Password">
-                            <label for="admin_password">Password</label>
+                            <input type="password" class="form-control" id="student_password" name="student_password" placeholder="Password">
+                            <label for="student_password">Password</label>
                         </div>
-                        <button class="w-100 btn btn-lg btn-dark" type="submit" id="submit_form" name="submit_form">Sign in</button>
-                        <p class="mt-5 mb-3 text-muted">&copy; 2020-<script>document.write(new Date().getFullYear());</script></p>
-                    </form>
-                </p>
-                <div class="d-inline-flex gap-2 mb-5">
-                <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Make a complaint
-                    <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-                </button>
-                <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
-                    Complaint status
-                </button>
+                    </p>
+                    <div class="d-inline-flex gap-2 mb-5">
+                    <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
+                        Sign in
+                        <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
+                    </button>
+                    <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
+                        Go home
+                    </a>
+                </form>
             </div>
         </div>
     </div>

@@ -148,40 +148,40 @@ if (isset($_POST['submit'])) {
           </symbol>
         </svg>
 
-            <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-              <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-                      id="bd-theme"
-                      type="button"
-                      aria-expanded="false"
-                      data-bs-toggle="dropdown"
-                      aria-label="Toggle theme (auto)">
+        <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+            <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+                id="bd-theme"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                aria-label="Toggle theme (auto)">
                 <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
                 <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
                 <li>
-                  <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
-                    Light
-                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-                  </button>
+                    <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                        <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+                        Light
+                        <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                    </button>
                 </li>
                 <li>
-                  <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
-                    Dark
-                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-                  </button>
+                    <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                        <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+                        Dark
+                        <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                    </button>
                 </li>
                 <li>
-                  <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
-                    Auto
-                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-                  </button>
+                    <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                        <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+                        Auto
+                        <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                    </button>
                 </li>
-              </ul>
-            </div>
+            </ul>
+        </div>
 
         <div class="container">
             <nav>
@@ -201,7 +201,7 @@ if (isset($_POST['submit'])) {
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
                 <p class="col-lg-8 mx-auto fs-5 text-muted">
-                  This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
+                    This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
                 </p>
                 <div class="d-inline-flex gap-2 mb-5">
                 <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -256,7 +256,8 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </div>
+
     <script src="dist/js/popper.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
-    </body>
+</body>
 </html>

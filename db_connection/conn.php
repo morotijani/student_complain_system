@@ -4,10 +4,10 @@
 	$servername = 'localhost';
 	$username = 'root';
 	$password = '';
-	$conn = new PDO("mysql:host=$servername;dbname=mifo", $username, $password);
+	$conn = new PDO("mysql:host=$servername;dbname=student_complaint_system", $username, $password);
 	session_start();
 
-	require_once($_SERVER['DOCUMENT_ROOT'].'/mifo/config.php');
+	require_once($_SERVER['DOCUMENT_ROOT'].'/student_complaint_system/config.php');
  	require_once(BASEURL.'helpers/helpers.php');
 
  	// Display on Messages on Errors And Success
@@ -28,61 +28,9 @@
  	 	unset($_SESSION['flash_error']);
  	}
 
- ////////////
- 	$siteQuery = "
-	    SELECT * FROM mifo_about 
-	    LIMIT 1
-	";
-	$statement = $conn->prepare($siteQuery);
-	$statement->execute();
-	$site_result = $statement->fetchAll();
-
-	$country = '';
-	$state = '';
-	$city = '';
-	$email = '';
-	$phone_1 = '';
-	$phone_2 = '';
-	$fax = '';
-	$street_1 = '';
-	$street_2 = '';
-	$about_info = '';
-	foreach ($site_result as $site_row) {
-	    $country = ucwords($site_row["about_country"]);
-	    $state = ucwords($site_row["about_state"]);
-	    $city = ucwords($site_row["about_city"]);
-	    $email = $site_row["about_email"];
-	    $phone_1 = $site_row["about_phone"];
-	    $phone_2 = $site_row["about_phone2"];
-	    $fax = $site_row["about_fax"];
-	    $street_1 = ucwords($site_row["about_street1"]);
-	    $street_2 = ucwords($site_row["about_street2"]);
-	    
-        $about_info = $site_row['about_info'];
-	}
+	
 
  	require BASEURL.'vendor/autoload.php';
-
- 	$cart_id = '';
- 	// check if cart exist in cookie
- 	if (isset($_COOKIE[CART_COOKIE])) {
- 		$cart_id = sanitize($_COOKIE[CART_COOKIE]);
-
- 		$cartQ = "
- 			SELECT * FROM mifo_cart 
- 			WHERE cart_id = ?
- 		";
- 		$statement = $conn->prepare($cartQ);
- 		$statement->execute([$cart_id]);
- 		if ($statement->rowCount() > 0) {
- 			// code... if cookie exist but does not exist in database then delete cookie form browser
- 			//echo 'exist';
- 		} else {
- 			$domain = ($_SERVER['HTTP_HOST'] != 'localhost')? '.'.$_SERVER['HTTP_HOST']: false;
-			setcookie(CART_COOKIE,'',1,"/",$domain,false);
- 			//echo 'deleted';
- 		}
- 	}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
