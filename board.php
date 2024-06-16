@@ -187,8 +187,6 @@ if (isset($_POST['submit'])) {
             <nav>
                 <ul class="nav justify-content-center">
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Signup</a></li>
-                    <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
@@ -198,7 +196,7 @@ if (isset($_POST['submit'])) {
 
         <div class="container my-3">
             <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
-                <img class="me-3" src="dist/media/logo.png" alt="" width="48" height="38">
+                <img class="me-3" src="dist/media/logo.png" alt="" width="48" height="48">
                 <div class="lh-1">
                   <h1 class="h6 mb-0 text-white lh-1">Student Complaint System</h1>
                   <small>CKT-UTAS</small>
@@ -206,6 +204,7 @@ if (isset($_POST['submit'])) {
             </div>
             
             <div class="p-5 text-center bg-body-tertiary rounded-3">
+                <h1 class="text-body-emphasis">23,004 complaints</h1>
                 <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Make a complaint
                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
@@ -216,15 +215,15 @@ if (isset($_POST['submit'])) {
             </div>
 
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-    <h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
+    <h6 class="border-bottom pb-2 mb-0">Complaints</h6>
     <div class="d-flex text-body-secondary pt-3">
       <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
       <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
         <div class="d-flex justify-content-between">
           <strong class="text-gray-dark">Full Name</strong>
-          <a href="#">Follow</a>
+          <a href="#">view</a>
         </div>
-        <span class="d-block">@username</span>
+        <span class="d-block">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
       </div>
     </div>
     <div class="d-flex text-body-secondary pt-3">
@@ -232,9 +231,9 @@ if (isset($_POST['submit'])) {
       <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
         <div class="d-flex justify-content-between">
           <strong class="text-gray-dark">Full Name</strong>
-          <a href="#">Follow</a>
+          <a href="#">view</a>
         </div>
-        <span class="d-block">@username</span>
+        <span class="d-block">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
       </div>
     </div>
     <div class="d-flex text-body-secondary pt-3">
@@ -242,13 +241,13 @@ if (isset($_POST['submit'])) {
       <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
         <div class="d-flex justify-content-between">
           <strong class="text-gray-dark">Full Name</strong>
-          <a href="#">Follow</a>
+          <a href="#">view</a>
         </div>
-        <span class="d-block">@username</span>
+        <span class="d-block">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
       </div>
     </div>
     <small class="d-block text-end mt-3">
-      <a href="#">All suggestions</a>
+      <a href="#">All complaints</a>
     </small>
   </div>
         </div>
