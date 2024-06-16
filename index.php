@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
                 echo "Your file is too big!";
             }
         } else {
-            echo "There was an error uploading your file!"
+            echo "There was an error uploading your file!";
         }
     } else {
         echo "You cannot upload files of this type!";
@@ -183,6 +183,18 @@ if (isset($_POST['submit'])) {
               </ul>
             </div>
 
+        <div class="container">
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Signup</a></li>
+                    <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
 
         <div class="container my-5">
             <div class="p-5 text-center bg-body-tertiary rounded-3">
