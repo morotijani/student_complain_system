@@ -25,4 +25,4 @@ RewriteCond $1 !^(media|admin|shop|helpers|fonts|dist|controller|connection|robo
 
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
-ErrorDocument 404 http://127.0.0.1/mifo/404.php
+#ErrorDocument 404 http://127.0.0.1/mifo/404.php
