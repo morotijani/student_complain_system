@@ -1,41 +1,42 @@
-<?php 
+<?php
 
-    require_once ("db_connection/conn.php");
+if (isset($_POST['submit'])) {
 
-    $error = '';
+    $file = $_FILES['file'];
+    $fileName = $_FILES['file']['name'];
+    $fileTmpName = $_FILES['file']['tmp_name'];
+    $fileSize = $_FILES['file']['size'];
+    $fileError = $_FILES['file']['error'];
+    $fileType = $_FILES['file']['type'];
 
-    if ($_POST) {
-        if (empty($_POST['admin_email']) || empty($_POST['admin_password'])) {
-            $error = 'You must provide email and password.';
-        }
-        $query = "
-            SELECT * FROM mifo_admin 
-            WHERE admin_email = :admin_email 
-            LIMIT 1
-        ";
-        $statement = $conn->prepare($query);
-        $statement->execute(['admin_email' => $_POST['admin_email']]);
-        $count_row = $statement->rowCount();
-        $result = $statement->fetchAll();
+    $fileExt = explode('.', $fileName);
+    $fileActualExt = strtolower(end($fileExt));
 
-        if ($count_row < 1) {
-            $error = 'Unkown admin.';
-        }
+    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
 
-        foreach ($result as $row) {
-            if (!password_verify($_POST['admin_password'], $row['admin_password'])) {
-                $error = 'Unkown admin.';
-            }
+    if (in_array($fileActalExt, $allowed)) {
+        // code...
+        if ($fileError === 0) {
+            if ($fileSize < 1000000) {
+                // code...
+                $fileNewName = uniqid('', true) . "." . $fileActualExt;
+                $fileDestination = 'dist/media/uploads/' . $fileNewName;
 
-            if (!empty($error)) {
-                $error;
+                move_uploaded_file($fileTmpName, $fileDestination);
+
+
             } else {
-                $admin_id = $row['admin_id'];
-                adminLogin($admin_id);
+                echo "Your file is too big!";
             }
+        } else {
+            echo "There was an error uploading your file!";
         }
-        
+    } else {
+        echo "You cannot upload files of this type!";
     }
+}
+
+
 
 ?>
 <!DOCTYPE html>
@@ -195,33 +196,102 @@
             </nav>
         </div>
 
-        <div class="container my-2">
-            <div class="p-3 text-center bg-body-tertiary rounded-3">
-                <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
-                <h1 class="text-body-emphasis">Student complaint system</h1>
-                <form method="POST" class="col-lg-8 mx-auto fs-5 text-muted">
-                    <p >
-                        <?= $flash; ?>
-                        Log into your account to lodge a complain or check your complain status. 
-                        <code class="mb-1"><?= $error; ?></code>
-                        <div class="form-floating mb-3">
+        <div class="container my-3">
+            <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+                <img class="me-3" src="dist/media/logo.png" alt="" width="48" height="38">
+                <div class="lh-1">
+                  <h1 class="h6 mb-0 text-white lh-1">Student Complaint System</h1>
+                  <small>CKT-UTAS</small>
+                </div>
+            </div>
+            
+            <div class="p-5 text-center bg-body-tertiary rounded-3">
+                <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Make a complaint
+                    <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
+                </button>
+                <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
+                    Complaint status
+                </button>
+            </div>
+
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+    <h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
+    <div class="d-flex text-body-secondary pt-3">
+      <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+      <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+        <div class="d-flex justify-content-between">
+          <strong class="text-gray-dark">Full Name</strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block">@username</span>
+      </div>
+    </div>
+    <div class="d-flex text-body-secondary pt-3">
+      <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+      <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+        <div class="d-flex justify-content-between">
+          <strong class="text-gray-dark">Full Name</strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block">@username</span>
+      </div>
+    </div>
+    <div class="d-flex text-body-secondary pt-3">
+      <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+      <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+        <div class="d-flex justify-content-between">
+          <strong class="text-gray-dark">Full Name</strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block">@username</span>
+      </div>
+    </div>
+    <small class="d-block text-end mt-3">
+      <a href="#">All suggestions</a>
+    </small>
+  </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Make a Complain</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Student ID</label>
+                            <input type="email" class="form-control" id="student_id" name="student_id" placeholder="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_email" class="form-label">Email address</label>
                             <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
-                            <label for="student_email">Student Email address</label>
                         </div>
-                        <div class="form-floating">
-                            <input type="password" class="form-control" id="student_password" name="student_password" placeholder="Password">
-                            <label for="student_password">Student Password</label>
+                        <div class="mb-3">
+                            <label for="student_name" class="form-label">Student Name</label>
+                            <input type="email" class="form-control" id="student_name" name="student_name" placeholder="">
                         </div>
-                    </p>
-                    <div class="d-inline-flex gap-2 mb-5">
-                    <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
-                        Sign in
-                        <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-                    </button>
-                    <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
-                        Go home
-                    </a>
-                </form>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Document (optional)</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                            <div class="form-text">Upload any document if available for more evidence</div>
+                        </div>
+                        <div class="mb-3">
+                          <label for="message" class="form-label">Message</label>
+                          <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="submit" class="btn btn-primary">Send complain</button>
+                </div>
             </div>
         </div>
     </div>
