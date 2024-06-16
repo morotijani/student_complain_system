@@ -196,6 +196,7 @@ if (isset($_POST['submit'])) {
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Hi <?= $user_data['first']; ?>!</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
                 </ul>
             </nav>
@@ -211,7 +212,7 @@ if (isset($_POST['submit'])) {
             </div>
             
             <div class="p-5 text-center bg-body-tertiary rounded-3">
-                <h1 class="text-body-emphasis">you've mad 23,004 complaints</h1>
+                <h1 class="text-body-emphasis">you've made 23,004 complaints</h1>
                 <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Make a complaint
                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>

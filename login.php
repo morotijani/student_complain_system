@@ -2,36 +2,40 @@
 
     require_once ("db_connection/conn.php");
 
+    if (student_is_logged_in()) {
+        redirect(PROOT . 'board');
+    }
+
     $error = '';
 
     if ($_POST) {
-        if (empty($_POST['admin_email']) || empty($_POST['admin_password'])) {
+        if (empty($_POST['student_email']) || empty($_POST['student_password'])) {
             $error = 'You must provide email and password.';
         }
         $query = "
-            SELECT * FROM mifo_admin 
-            WHERE admin_email = :admin_email 
+            SELECT * FROM students 
+            WHERE email = :email 
             LIMIT 1
         ";
         $statement = $conn->prepare($query);
-        $statement->execute(['admin_email' => $_POST['admin_email']]);
+        $statement->execute(['email' => $_POST['student_email']]);
         $count_row = $statement->rowCount();
         $result = $statement->fetchAll();
 
         if ($count_row < 1) {
-            $error = 'Unkown admin.';
+            $error = 'Unkown student.';
         }
 
         foreach ($result as $row) {
-            if (!password_verify($_POST['admin_password'], $row['admin_password'])) {
-                $error = 'Unkown admin.';
+            if (!password_verify($_POST['student_password'], $row['password'])) {
+                $error = 'Unkown student.';
             }
 
             if (!empty($error)) {
                 $error;
             } else {
-                $admin_id = $row['admin_id'];
-                adminLogin($admin_id);
+                $stud_id = $row['id'];
+                studentLogin($stud_id);
             }
         }
         
@@ -185,12 +189,11 @@
         <div class="container">
             <nav>
                 <ul class="nav justify-content-center">
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Signup</a></li>
                     <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                    <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
                 </ul>
             </nav>
         </div>
@@ -203,7 +206,7 @@
                     <p >
                         <?= $flash; ?>
                         Log into your account to lodge a complain or check your complain status. 
-                        <code class="mb-1"><?= $error; ?></code>
+                        <br><code class="mb-1"><?= $error; ?></code>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
                             <label for="student_email">Student Email address</label>

@@ -1,5 +1,12 @@
 <?php
 
+require_once ("db_connection/conn.php");
+
+if (student_is_logged_in()) {
+    redirect(PROOT . 'board');
+}
+
+
 if (isset($_POST['submit'])) {
 
     $file = $_FILES['file'];
@@ -186,12 +193,18 @@ if (isset($_POST['submit'])) {
         <div class="container">
             <nav>
                 <ul class="nav justify-content-center">
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Signup</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
+                    <li class="nav-item"><a href="signup" class="nav-link px-2 text-body-secondary">Signup</a></li>
                     <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <?php if (student_is_logged_in()): ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-2 text-body-secondary">
+                            name
+                        </a>
+                    </li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                    <?php endif ?>
                 </ul>
             </nav>
         </div>
