@@ -202,14 +202,14 @@
         <div class="container">
             <a class="navbar-brand d-md-none" href="#">
                 <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
-                Aperture
+                SCS
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasLabel">Aperture</h5>
+                    <h5 class="offcanvas-title" id="offcanvasLabel">SCS</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -219,15 +219,15 @@
                                 <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
                             </a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Complaints</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Students</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="categories">Categories</a></li>
+                        <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
+                        <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Hello Admin!</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <svg class="bi" width="24" height="24"><use xlink:href="#cart"/></svg>
+                                <svg class="bi" width="24" height="24"><use xlink:href="#arrow-left"/></svg>
                             </a>
                         </li>
                     </ul>
@@ -239,8 +239,8 @@
     <main>
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
             <div class="col-md-6 p-lg-5 mx-auto my-5">
-                <h1 class="display-3 fw-bold">Designed for engineers</h1>
-                <h3 class="fw-normal text-muted mb-3">Build anything you want with Aperture</h3>
+                <h1 class="display-3 fw-bold">there is <?= count_complaints(); ?>244,234 compliants</h1>
+                <h3 class="fw-normal text-muted mb-3">from the database so far</h3>
                 <div class="d-flex gap-3 justify-content-center lead fw-normal">
                     <a class="icon-link" href="#">
                         Learn more

@@ -427,184 +427,34 @@ function get_categories(){
 }
 
 
-	// GET PRODUCT CATEGORY
-function get_product_category($product_category) {
+// count complaints per each student
+function count_complaints_per_students($user_id) {
 	global $conn;
-	$output = '';
-
 	$query = "
-		SELECT * FROM mifo_category 
-		WHERE category_trash = :category_trash
+		SELECT * FROM complaints 
+		WHERE user_id = ?, trash = ?
 	";
 	$statement = $conn->prepare($query);
 	$statement->execute(
-		[
-			':category_trash' 	=> 0
-		]
+		[$user_id, 0]
 	);
 	$result = $statement->fetchAll();
-	$count_category = $statement->rowCount();
-	if ($count_category > 0) {
-		foreach ($result as $row) {
-			$output .= '
-				<option value="'.$row['category_id']. '" '.(($product_category == $row['category_id'])? "selected" : "").'>'.ucwords($row['category']).'</option>
-			';
-		}
-	} else {
-		$output = '<option value="">No category found.</option>';
-	}
-	return $output;
+	return $statement->rowCount();
 }
 
-// GET ALL PRODUCTS WHERE TRASH = 0
-function  get_all_product($product_trash = '') {
+// count all complaints
+function count_complaints() {
 	global $conn;
-	$output = '';
-
 	$query = "
-		SELECT * FROM mifo_product 
-		INNER JOIN mifo_brand 
-		ON mifo_brand.brand_id = mifo_product.product_brand  
-		INNER JOIN mifo_category
-		ON mifo_category.category_id = mifo_product.product_category
-		LEFT JOIN mifo_admin
-		ON mifo_admin.admin_id = mifo_product.product_added_by
-		WHERE mifo_product.product_trash = :product_trash
-		AND mifo_category.category_trash = :category_trash
-		ORDER BY mifo_product.product_id DESC
+		SELECT * FROM complaints 
+		WHERE trash = ?
 	";
 	$statement = $conn->prepare($query);
-	$statement->execute([
-		':product_trash' 	=> $product_trash,
-		':category_trash' 	=> 0
-	]);
-	$count_products = $statement->rowCount();
-	$result = $statement->fetchAll();
-
-	if ($count_products > 0) {
-		$i = 1;
-		foreach ($result as $key => $row) {
-			$output .= '
-				<tr>
-					<td>'.$i.'</td>
-					<td>'.ucwords($row["product_name"]).'</td>
-					<td>'.$row["brand_name"].'</td>
-					<td>'.ucwords($row["category"]).'</td>
-					<td>'.money($row["product_price"]).'</td>
-					<td>'.$row["product_sizes"].'</td>
-					<td>'.ucwords($row["admin_fullname"]).'</td>
-					<td>'.pretty_date($row["product_added_date"]).'</td>
-				';
-				if ($product_trash == 0) {
-					$output .= '
-						<td>
-							<a href="'.PROOT.'admin/products?featured='.(($row['product_featured'] == 0)?"1":"0").'&id='.$row["product_id"].'" class="btn btn-sm btn-light">
-								<span data-feather="'.(($row['product_featured'] == 0)?"plus":"minus").'"></span> '.(($row['product_featured'] == 0)?"":"Featured product").'
-							</a>
-						</td>
-						<td>
-					';
-				} else {
-					$output .= '
-						<td>
-						</td>
-						<td>
-					';
-				}
-				if ($product_trash == 1) {
-					$output .= '
-						<a href="'.PROOT.'admin/products?permanent_delete='.$row["product_id"].'&upload_product_image_name='.$row["product_image"].'" class="btn btn-sm btn-outline-primary"><span data-feather="trash"></span></a>&nbsp;
-                          <a href="'.PROOT.'admin/products?restore='.$row["product_id"].'" class="btn btn-sm btn-outline-danger"><span data-feather="refresh-cw"></span></a>&nbsp;
-					';
-				} else {
-					$output .= '
-							<a href="'.PROOT.'admin/products?edit='.$row["product_id"].'" class="btn btn-sm btn-info"><span data-feather="edit-2"></span></a>
-							<a href="'.PROOT.'admin/products?delete='.$row["product_id"].'" class="btn btn-sm btn-secondary"><span data-feather="trash-2"></span></a>
-						';
-				}
-				$output .= '
-						</td>
-					</tr>
-				';
-			$i++;
-		}
-	} else {
-		$output = '
-			<tr>
-				<td colspan="9">No products found in the database...</h3></td>
-			</tr>
-		';
-	}
-	return $output;
-}
-
-// GET ALL CATEGORIES
-function get_all_category($category_trash = 0) {
-	global $conn;
-	$output = '';
-
-	$query = "
-		SELECT * FROM mifo_category 
-		WHERE category_parent = :category_parent 
-		AND category_trash = :category_trash 
-		ORDER BY category_id DESC
-	";
-	$statement = $conn->prepare($query);
-	$statement->execute([
-		':category_parent' => 0,
-		':category_trash' => $category_trash
-	]);
-	$result = $statement->fetchAll();
-	$count_row = $statement->rowCount();
-
-	if ($count_row > 0) {
-		foreach ($result as $row) {
-			$parent_id = (int)$row["category_id"];
-			$child = $conn->query("
-				SELECT * FROM mifo_category 
-				WHERE category_parent = {$parent_id}
-			")->fetchAll();
-
-
-			$output .= '
-				<tr class="bg-info">
-					<td>
-						<a href="category?edit='.$row["category_id"].'" class="btn btn-sm btn-secondary"><i data-feather="edit"></i></a>
-					</td>
-					<td>'.ucwords($row["category"]).'</td>
-					<td>Parent</td>
-					<td>'.pretty_date($row["category_added_date"]).'</td>
-					<td>
-						<span id="'.$row["category_id"].'" onclick="perm_delete_category(category_id = '.$row["category_id"].');" class="btn btn-sm btn-light"><i data-feather="trash-2"></i></span>
-					</td>
-				</tr>
-			';
-			foreach ($child as $child_row) {
-				// code...
-				$output .= '
-
-				<tr class="bg-light">
-					<td>
-						<a href="category?edit='.$child_row["category_id"].'" class="btn btn-sm btn-secondary"><i data-feather="edit"></i></a>
-					</td>
-					<td>'.ucwords($row["category"]).'</td>
-					<td>'.ucwords($child_row["category"]).'</td>
-					<td>'.pretty_date($child_row["category_added_date"]).'</td>
-					<td>
-						<span id="'.$child_row["category_id"].'" onclick="temp_delete_category(category_id = '.$child_row["category_id"].');" class="btn btn-sm btn-light">Delete</span>
-						</td>
-					</tr>
-				';
-			}
-		}
-	} else {
-		$output = '
-			<tr>
-				<td colspan="4">No category found.</td>
-			</tr>
-		';
-	}
-	return $output;
+	$statement->execute(
+		[0]
+	);
+	$statement->fetchAll();
+	return $statement->rowCount();
 }
 
 

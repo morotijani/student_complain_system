@@ -234,7 +234,7 @@ if (isset($_POST['submit'])) {
         </div>
             
         <div class="p-5 text-center bg-body-tertiary rounded-3">
-            <h1 class="text-body-emphasis">you've made 23,004 complaints</h1>
+            <h1 class="text-body-emphasis">you've made <?= count_complaints_per_students($user_id); ?> complaints</h1>
             <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Make a complaint
                 <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
