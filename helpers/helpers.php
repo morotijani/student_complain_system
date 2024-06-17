@@ -321,8 +321,8 @@ function adminLogin($admin_id) {
 	$statement = $conn->prepare($query);
 	$result = $statement->execute($data);
 	if (isset($result)) {
-		$_SESSION['flash_success'] = '<div class="text-center" id="temporary">You are now logged in!</div>';
-		redirect(PROOT . 'index');
+		$_SESSION['flash_success'] = 'You are now logged in!';
+		redirect(PROOT . 'admin/index');
 	}
 }
 
@@ -336,23 +336,15 @@ function admin_is_logged_in(){
 // Redirect admin if !logged in
 function admn_login_redirect($url = 'login') {
 	$_SESSION['flash_error'] = '<div class="text-center" id="temporary" style="margin-top: 60px;">You must be logged in to access that page.</div>';
-	redirect(PROOT . $url);
+	redirect(PROOT . 'admin/' . $url);
 }
 
 // Redirect admin if do not have permission
 function admin_permission_redirect($url = 'login') {
 	$_SESSION['flash_error'] = '<div class="text-center" id="temporary" style="margin-top: 60px;">You do not have permission in to access that page.</div>';
-	header('Location: '.$url);
+	header('Location: admin/'.$url);
 }
 
-function admin_has_permission($permission = 'admin') {
-	global $admin_data;
-	$permissions = explode(',', $admin_data['admin_permissions']);
-	if (in_array($permission, $permissions, true)) {
-		return true;
-	}
-	return false;
-}
 
 
 

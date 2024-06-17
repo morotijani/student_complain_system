@@ -6,9 +6,6 @@
         admn_login_redirect();
     }
 
-    include ("includes/header.inc.php");
-    include ("includes/nav.inc.php");
-    include ("includes/left-side-bar.inc.php");
 
     function display_errors($errors) {
         $display = '<ul class="bg-danger">';
