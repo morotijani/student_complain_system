@@ -18,8 +18,8 @@
     }
 
 
-    $brand_value = isset($_POST['brand']) ? sanitize($_POST['brand']) : '';
-    $brand_url = php_url_slug($brand_value);
+    $category_value = isset($_POST['category']) ? sanitize($_POST['category']) : '';
+
     // Edit Brand
     if (isset($_GET['edit']) && !empty($_GET['edit'])) {
         // code...
@@ -27,7 +27,7 @@
 
         $query = "
             SELECT * FROM categories 
-            WHERE brand_id = ? 
+            WHERE id = ? 
             LIMIT 1
         ";
         $statement = $conn->prepare($query);
@@ -35,12 +35,10 @@
         $row = $statement->fetchAll();
         $count = $statement->rowCount();
         if ($count > 0) {
-            $brand_value = $row[0]['brand_name'];
-            $brand_banner = $row[0]['brand_banner'];
-            $brand_url = php_url_slug($brand_value);
+            $category_value = $row[0]['category'];
         } else {
             $_SESSION['flash_error'] = 'Unknow brand!';
-            redirect(PROOT . 'admin/brands');
+            redirect(PROOT . 'admin/categories');
         }
     }
 
@@ -50,7 +48,7 @@
         $delete_id = sanitize((int)$_GET['delete']);
         $query = "
             SELECT * FROM categories 
-            WHERE brand_id = ? 
+            WHERE id = ? 
             LIMIT 1
         ";
         $statement = $conn->prepare($query);
@@ -58,28 +56,23 @@
         $row = $statement->fetchAll();
         $count = $statement->rowCount();
         if ($count > 0) {
-            $filename = BASEURL . $row[0]['brand_banner'];
-            if (file_exists($filename)) {
-                // code...
-                unlink($filename);
-            }
-            // code...
+            
             $deleteQuery = "
                 DELETE FROM categories 
-                WHERE brand_id = ? 
+                WHERE id = ? 
             ";
             $statement = $conn->prepare($deleteQuery);
             $sub_result = $statement->execute([$delete_id]);
             if ($sub_result) {
                 // code...
-                $_SESSION['flash_success'] = 'Brand deleted!';
-                redirect(PROOT . 'admin/brands');
+                $_SESSION['flash_success'] = 'Category deleted!';
+                redirect(PROOT . 'admin/categoriesz');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
         } else {
-            $_SESSION['flash_error'] = 'Unknow brand!';
-            redirect(PROOT . 'admin/brands');
+            $_SESSION['flash_error'] = 'Unknow category!';
+            redirect(PROOT . 'admin/categoriesz');
         }
     }
 
@@ -88,53 +81,22 @@
     $errors = array();
     if (isset($_POST['add_submit'])) {
 
-        $brand = sanitize($_POST['brand']);
+        $category = sanitize($_POST['category']);
         // check if brand is blank
-        if ($brand == '') {
+        if ($category == '') {
             // code...
-            $errors[] .= 'You must enter a brand.';
+            $errors[] .= 'You must enter a category.';
         }
 
-        // check if brand exist in database;
-        $count_brand = $conn->query("SELECT * FROM categories WHERE brand_name = '$brand'")->rowCount();
+        // check if category exist in database;
+        $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category'")->rowCount();
         if (isset($_GET['edit'])) {
-            $count_brand = $conn->query("SELECT * FROM categories WHERE brand_name = '$brand' AND brand_id != '$edit_id'")->rowCount();
+            $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category' AND id != '$edit_id'")->rowCount();
         }
         if ($count_brand > 0) {
             // code...
-            $errors[] .= $brand . ' already exist. Please choose another brand.';
-            $filename = '';
+            $errors[] .= $category . ' already exist. Please choose another category.';
         }
-
-        if (isset($_GET['edit']) && empty($_FILES['banner']['name'])) {
-            $location = $brand_banner;
-        } else if (isset($_GET['edit']) && !empty($_FILES['banner']['name'])) {
-            // Delete previous banner image
-            $filename = BASEURL . $brand_banner;
-            if (file_exists($filename)) {
-                unlink($filename);
-            }
-            $image_test = explode(".", $_FILES["banner"]["name"]);
-            $image_extension = end($image_test);
-            $image_name = md5(microtime()).'.'.$image_extension;
-
-            $location = 'shop/assets/media/collection/'.$image_name;
-            move_uploaded_file($_FILES["banner"]["tmp_name"], BASEURL . $location);
-        } else if (!isset($_GET['edit'])) {
-            if (!empty($_FILES['banner']['name'])) {
-                // code...
-                $image_test = explode(".", $_FILES["banner"]["name"]);
-                $image_extension = end($image_test);
-                $image_name = md5(microtime()).'.'.$image_extension;
-
-                $location = 'shop/assets/media/collection/'.$image_name;
-                move_uploaded_file($_FILES["banner"]["tmp_name"], BASEURL . $location);
-
-            } else {
-                $errors[] .= 'Please select a banner image for the brand.';
-            }
-        }
-        
 
         // display errors
         if (!empty($errors)) {
@@ -142,26 +104,26 @@
         } else {
             // add brand to database
             $sql = "
-                INSERT INTO categories (brand_name, brand_banner, brand_url) 
-                VALUES (?, ?, ?)
+                INSERT INTO categories (category) 
+                VALUES (?)
             ";
             if (isset($_GET['edit'])) {
                 // code...
                 $sql = "
                     UPDATE categories 
-                    SET brand_name = ? , brand_banner = ?, brand_url = ?  
-                    WHERE brand_id = '$edit_id'
+                    SET category = ?   
+                    WHERE id = '$edit_id'
                 ";
             }
             $statement = $conn->prepare($sql);
-            $result = $statement->execute([$brand, $location, $brand_url]);
+            $result = $statement->execute([$category]);
             if (isset($result)) {
                 // code...
-                $_SESSION['flash_success'] = $brand . ' brand ' . ((isset($_GET['edit'])) ? 'edited' : 'added') . '!';
-                redirect(PROOT . 'admin/brands');
+                $_SESSION['flash_success'] = $category . ' category ' . ((isset($_GET['edit'])) ? 'edited' : 'added') . '!';
+                redirect(PROOT . 'admin/categories');
             } else {
                 echo js_alert('Something went wrong, please try again.');
-                redirect(PROOT . 'admin/brands');
+                redirect(PROOT . 'admin/categories');
             }
         }
     }
@@ -392,8 +354,8 @@
                         <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Hello Admin!</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <svg class="bi" width="24" height="24"><use xlink:href="#arrow-left"/></svg>
+                            <a class="nav-link" href="logout">
+                                Logout
                             </a>
                         </li>
                     </ul>
@@ -408,15 +370,15 @@
             <h1 class="h2">Categories</h1>
             <div class="col-md-5">
                 <?= $output; ?>
-                <form class="row gy-2 gx-3 align-items-center mb-3" action="brands<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : ''); ?>" method="POST" enctype="multipart/form-data">
+                <form class="row gy-2 gx-3 align-items-center mb-3" action="categories<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : ''); ?>" method="POST" enctype="multipart/form-data">
                     <div class="col-auto">
-                        <label class="visually-hidden" for="brand">Name</label>
-                        <input type="text" class="form-control" id="brand" name="brand" placeholder="eg, Bulling" value="<?= $brand_value; ?>" required>
+                        <label class="visually-hidden" for="category">Name</label>
+                        <input type="text" class="form-control" id="category" name="category" placeholder="eg, Bulling" value="<?= $category_value; ?>" required>
                     </div>
                     <div class="col-auto">
                         <button type="submit" name="add_submit" id="add_submit" class="btn btn-dark"><?= ((isset($_GET['edit'])) ? 'Edit': 'Add a'); ?> Category</button>
                         <?php if (isset($_GET['edit'])): ?>
-                            <a href="<?= PROOT; ?>admin/brands" class="btn btn-secondary">Cancel</a>
+                            <a href="<?= PROOT; ?>admin/categories" class="btn btn-secondary">Cancel</a>
                         <?php endif; ?>
                     </div>
                 </form>
@@ -436,17 +398,12 @@
                         <?php foreach ($result as $row): ?>
                             <tr>
                                 <td>
-                                    <a href="brands?edit=<?= $row['brand_id']; ?>" class="badge bg-warning"><i data-feather="edit"></i></a>
+                                    <a href="categories?edit=<?= $row['id']; ?>" class="badge bg-warning">Edit</a>
                                 </td>
-                                <td><?= $row['brand_name']; ?></td>
+                                <td><?= $row['category']; ?></td>
+                                <td><?= pretty_date($row['createdAt']); ?></td>
                                 <td>
-                                    <a href="<?= PROOT . $row['brand_banner']; ?>" target="_blank">
-                                        <img src="<?= PROOT . $row['brand_banner']; ?>" alt="" width="100" height="100" class="img-thumbnail">
-                                    </a>
-                                </td>
-                                <td><?= pretty_date($row['brand_added_date']); ?></td>
-                                <td>
-                                    <a href="brands?delete=<?= $row['brand_id']; ?>" class="badge bg-danger"><i data-feather="trash-2"></i></a>
+                                    <a href="categories?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -2,8 +2,6 @@
 
     require_once ("../db_connection/conn.php");
 
-    unset($_SESSION['MFAdmin']);
+    unset($_SESSION['ComAdmin']);
 
-    header('Location: login');
-
-?>
+    redirect(PROOT . 'admin/login');
