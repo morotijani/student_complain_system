@@ -8,11 +8,11 @@ if (!student_is_logged_in()) {
 
 $complaint_date = ((isset($_POST['complaint_date']) ? sanitize($_POST['complaint_date']) : ''));
 $message = ((isset($_POST['message']) ? sanitize($_POST['message']) : ''));
+$fileNewName = '';
 if (isset($_POST['submit'])) {
 
     if (empty($_FILES)) {
         exit('$_FILES is empty - is file_uploads set to "Off" in php.ini?');
-        $fileNewName = '';
     } else {
 
         $file = $_FILES['file'];
@@ -50,10 +50,10 @@ if (isset($_POST['submit'])) {
 
     $complaint_id = uniqid('', true);
     $createdAt = date("Y-m-d H:i:s");
-    $data = [$complaint_id, $user_id, $fileNewName, $message, $complaint_date, $createdAt];
+    $data = [$complaint_id, $user_id, (int)$_POST['complaint_category'], $fileNewName, $message, $complaint_date, $createdAt];
     $sql = "
-        INSERT INTO `complaints`(`complaint_id`, `student_id`, `complaint_document`, `complaint_message`, `complaint_date`, `createdAt`) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO `complaints`(`complaint_id`, `student_id`, `category_id`, `complaint_document`, `complaint_message`, `complaint_date`, `createdAt`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ";
     $statement = $conn->prepare($sql);
     $result = $statement->execute($data);
@@ -272,7 +272,7 @@ if (isset($_POST['submit'])) {
                             <div class="mb-3">
                                 <label for="complaint_date" class="form-label">Category</label>
                                 <select type="text" class="form-control" id="complaint_category" name="complaint_category" required>
-                                    <option></option>
+                                    <option value=""></option>
                                     <?= get_categories(); ?>
                                 </select>
                             </div>

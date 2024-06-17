@@ -363,22 +363,33 @@ function get_complaint_per_student($student_id) {
 
 	$query = "
 		SELECT * FROM complaints 
-		WHERE student_id = ?
-		AND trash = ? 
-		ORDER BY createdAt DESC
+		INNER JOIN categories 
+		ON categories.id = complaints.category_id
+		WHERE complaints.student_id = ?
+		AND complaints.trash = ? 
+		ORDER BY complaints.createdAt DESC
 	";
 	$statement = $conn->prepare($query);
 	$statement->execute(
 		[$student_id, 0]
 	);
 	$resutl = $statement->fetchAll();
+	if ($statement->rowCount() > 0) {
+		// code...
+	} else {
+		$output = '
+			<div class="alert alert-primary" role="alert">
+				You have no complaints yet.
+			</div>
+		';
+	}
 	foreach ($resutl as $row) {
 		$output .= '
 			<div class="d-flex text-body-secondary pt-3">
                 <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
                 <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
                     <div class="d-flex justify-content-between">
-                        <strong class="text-gray-dark">'.$row["complaint_id"].'</strong>
+                        <strong class="text-gray-dark">'.ucwords($row["category"]) . ' / ' . $row["complaint_id"].'</strong>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a>
                     </div>
                     <span class="d-block">' . substr($row["complaint_message"], 0, 180) . ' ...</span>
@@ -394,6 +405,8 @@ function get_complaint_per_student($student_id) {
 				        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				      	</div>
 				      	<div class="modal-body">
+				      		Category: '.ucwords($row["category"]).'
+				      		<br>
 				        	' . nl2br($row['complaint_message']) . '
 				        	<br>
 				        	' . (($row['complaint_document'] != '' ) ? '<img src="'.$row["complaint_document"].'" class="img-thumbnail">' : '') . '
@@ -409,7 +422,8 @@ function get_complaint_per_student($student_id) {
 	return $output;
 }
 
-function get_categories(){
+// get all categories for complaints lodging
+function get_categories() {
 	global $conn;
 	$output = '';
 	$sql = "
@@ -419,8 +433,8 @@ function get_categories(){
 	$statement = $conn->query($sql);
 	$categories = $statement->fetchAll();
 	foreach ($categories as $category) {
-		$output = '
-			<option>'.ucwords($category["category"]).'</option>
+		$output .= '
+			<option value="'.$category["id"].'">'.ucwords($category["category"]).'</option>
 		';
 	}
 	return $output;
@@ -428,17 +442,18 @@ function get_categories(){
 
 
 // count complaints per each student
-function count_complaints_per_students($user_id) {
+function count_complaints_per_students($student_id) {
 	global $conn;
 	$query = "
-		SELECT * FROM complaints 
-		WHERE user_id = ?, trash = ?
+		SELECT * FROM complaints  
+		INNER JOIN categories 
+		ON categories.id = complaints.category_id
+		WHERE complaints.student_id = ? AND complaints.trash = ?
 	";
 	$statement = $conn->prepare($query);
 	$statement->execute(
-		[$user_id, 0]
+		[$student_id, 0]
 	);
-	$result = $statement->fetchAll();
 	return $statement->rowCount();
 }
 

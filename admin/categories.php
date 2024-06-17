@@ -66,7 +66,7 @@
             if ($sub_result) {
                 // code...
                 $_SESSION['flash_success'] = 'Category deleted!';
-                redirect(PROOT . 'admin/categoriesz');
+                redirect(PROOT . 'admin/categories');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
