@@ -365,30 +365,54 @@ function admin_has_permission($permission = 'admin') {
 
 
 // GET PRODUCT CATEGORY
-function get_category($category_id) {
+function get_complaint_per_student($student_id) {
 	global $conn;
-	$output = [];
+	$output = '';
 
 	$query = "
-		SELECT * FROM mifo_category 
-		WHERE category_id = :category_id
-		AND category_trash = :category_trash 
-		LIMIT 1
+		SELECT * FROM complaints 
+		WHERE student_id = ?
+		AND trash = ? 
+		ORDER BY createdAt DESC
 	";
 	$statement = $conn->prepare($query);
 	$statement->execute(
-		[
-			':category_id' 	=> $category_id,
-			':category_trash' 	=> 0
-		]
+		[$student_id, 0]
 	);
-	$children = $statement->fetchAll();
-	foreach ($children as $child) {
-		$output['child'] = $child['category'];
-		$parents = $conn->query("SELECT * FROM mifo_category WHERE category_id = {$child['category_parent']}")->fetchAll();
-		foreach ($parents as $parent) {
-			$output['parent'] = $parent['category'];
-		}
+	$resutl = $statement->fetchAll();
+	foreach ($resutl as $row) {
+		$output .= '
+			<div class="d-flex text-body-secondary pt-3">
+                <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+                    <div class="d-flex justify-content-between">
+                        <strong class="text-gray-dark">'.$row["complaint_id"].'</strong>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a>
+                    </div>
+                    <span class="d-block">' . substr($row["complaint_message"], 0, 180) . ' ...</span>
+                </div>
+            </div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="complaintModal_'.$row["id"].'" tabindex="-1" aria-labelledby="complaintModalLabel_'.$row["id"].'" aria-hidden="true">
+			  	<div class="modal-dialog">
+			    	<div class="modal-content">
+			      		<div class="modal-header">
+				        	<h1 class="modal-title fs-5" id="complaintModalLabel_'.$row["id"].'">Complaint on '.pretty_date($row["createdAt"]).'</h1>
+				        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      	</div>
+				      	<div class="modal-body">
+				        	' . nl2br($row['complaint_message']) . '
+				        	<br>
+				        	' . (($row['complaint_document'] != '' ) ? '<img src="'.$row["complaint_document"].'" class="img-thumbnail">' : '') . '
+				      	</div>
+				      	<div class="modal-footer">
+				        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				      	</div>
+				    </div>
+			  	</div>
+			</div>
+		';
 	}
 	return $output;
 }
