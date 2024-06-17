@@ -6,43 +6,7 @@
         admn_login_redirect();
     }
 
-
-    function display_errors($errors) {
-        $display = '<ul class="bg-danger">';
-        foreach ($errors as $error) {
-            // code...
-            $display .= '<li class="text-light">' . $error . '</li>';
-        }
-        $display .= '</ul>';
-        return $display;
-    }
-
-
-    $category_value = isset($_POST['category']) ? sanitize($_POST['category']) : '';
-
-    // Edit Brand
-    if (isset($_GET['edit']) && !empty($_GET['edit'])) {
-        // code...
-        $edit_id = sanitize((int)$_GET['edit']);
-
-        $query = "
-            SELECT * FROM categories 
-            WHERE id = ? 
-            LIMIT 1
-        ";
-        $statement = $conn->prepare($query);
-        $statement->execute([$edit_id]);
-        $row = $statement->fetchAll();
-        $count = $statement->rowCount();
-        if ($count > 0) {
-            $category_value = $row[0]['category'];
-        } else {
-            $_SESSION['flash_error'] = 'Unknow brand!';
-            redirect(PROOT . 'admin/categories');
-        }
-    }
-
-    // Delete brand
+    // Disable student
     if (isset($_GET['delete']) && !empty($_GET['delete'])) {
         // code...
         $delete_id = sanitize((int)$_GET['delete']);
@@ -78,60 +42,11 @@
         }
     }
 
-    // if add form is submitted
-    $output = '';
-    $errors = array();
-    if (isset($_POST['add_submit'])) {
-
-        $category = sanitize($_POST['category']);
-        // check if brand is blank
-        if ($category == '') {
-            // code...
-            $errors[] .= 'You must enter a category.';
-        }
-
-        // check if category exist in database;
-        $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category'")->rowCount();
-        if (isset($_GET['edit'])) {
-            $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category' AND id != '$edit_id'")->rowCount();
-        }
-        if ($count_brand > 0) {
-            // code...
-            $errors[] .= $category . ' already exist. Please choose another category.';
-        }
-
-        // display errors
-        if (!empty($errors)) {
-            $output = display_errors($errors);
-        } else {
-            // add brand to database
-            $sql = "
-                INSERT INTO categories (category) 
-                VALUES (?)
-            ";
-            if (isset($_GET['edit'])) {
-                // code...
-                $sql = "
-                    UPDATE categories 
-                    SET category = ?   
-                    WHERE id = '$edit_id'
-                ";
-            }
-            $statement = $conn->prepare($sql);
-            $result = $statement->execute([$category]);
-            if (isset($result)) {
-                // code...
-                $_SESSION['flash_success'] = $category . ' category ' . ((isset($_GET['edit'])) ? 'edited' : 'added') . '!';
-                redirect(PROOT . 'admin/categories');
-            } else {
-                echo js_alert('Something went wrong, please try again.');
-                redirect(PROOT . 'admin/categories');
-            }
-        }
-    }
-
-    // get brands from database    
-    $sql = "SELECT * FROM categories";
+    // get all student from database    
+    $sql = "
+        SELECT * FROM students 
+        WHERE trash = 0
+    ";
     $statement = $conn->prepare($sql);
     $statement->execute();
     $result = $statement->fetchAll();
@@ -147,7 +62,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Category . Dashboard</title>
+    <title>Students . Dashboard</title>
 
     
     <link href="<?= PROOT; ?>dist/css/bootstrap.min.css" rel="stylesheet">
@@ -369,46 +284,36 @@
     <main>
         <span><?= $flash; ?></span>
         <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
-            <h1 class="h2">Categories</h1>
-            <div class="col-md-5">
-                <?= $output; ?>
-                <form class="row gy-2 gx-3 align-items-center mb-3" action="categories<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : ''); ?>" method="POST" enctype="multipart/form-data">
-                    <div class="col-auto">
-                        <label class="visually-hidden" for="category">Name</label>
-                        <input type="text" class="form-control" id="category" name="category" placeholder="eg, Bulling" value="<?= $category_value; ?>" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="add_submit" id="add_submit" class="btn btn-dark"><?= ((isset($_GET['edit'])) ? 'Edit': 'Add a'); ?> Category</button>
-                        <?php if (isset($_GET['edit'])): ?>
-                            <a href="<?= PROOT; ?>admin/categories" class="btn btn-secondary">Cancel</a>
-                        <?php endif; ?>
-                    </div>
-                </form>
-
-     
-
-                <table class="table table-striped table-bordered table-sm" style="width: auto; margin: 0 auto;">
+            <h1 class="h2">Complaints</h1>
+            <div class="col-md-10">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Category</th>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Level</th>
                             <th>Date Added</th>
+                            <th>Last Logged in</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($result as $row): ?>
+                        <?php $i = 1; foreach ($result as $row): ?>
                             <tr>
-                                <td>
-                                    <a href="categories?edit=<?= $row['id']; ?>" class="badge bg-warning">Edit</a>
-                                </td>
-                                <td><?= $row['category']; ?></td>
+                                <td><?= $i; ?></td>
+                                <td><?= $row['student_id']; ?></td>
+                                <td><?= $row['student_email']; ?></td>
+                                <td><?= ucwords($row['fullname']); ?></td>
+                                <td><?= $row['level']; ?></td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
+                                <td><?= pretty_date($row['updatedAt']); ?></td>
                                 <td>
-                                    <a href="categories?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
+                                    <a href="students?delete=<?= $row['id']; ?>" class="badge bg-danger">Disable student</a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php $i++; endforeach; ?>
                     </tbody>
                 </table>
             </div>

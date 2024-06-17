@@ -15,6 +15,9 @@ function dnd($data) {
 function pretty_date($date){
 	return date("M d, Y h:i A", strtotime($date));
 }
+function pretty_date_only($date){
+	return date("M d, Y", strtotime($date));
+}
 
 // Display money in a readable way
 function money($number) {
@@ -407,6 +410,9 @@ function get_complaint_per_student($student_id) {
 				      	<div class="modal-body">
 				      		Category: '.ucwords($row["category"]).'
 				      		<br>
+				      		Event Date: '.pretty_date_only($row["complaint_date"]).'
+				      		<br>
+				      		<hr>
 				        	' . nl2br($row['complaint_message']) . '
 				        	<br>
 				        	' . (($row['complaint_document'] != '' ) ? '<img src="'.$row["complaint_document"].'" class="img-thumbnail">' : '') . '

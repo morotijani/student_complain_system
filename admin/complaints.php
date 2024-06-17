@@ -131,7 +131,14 @@
     }
 
     // get brands from database    
-    $sql = "SELECT * FROM categories";
+    $sql = "
+        SELECT * FROM complaints 
+        INNER JOIN categories 
+        ON categories.id = complaints.category_id
+        INNER JOIN students 
+        ON students.id = complaints.student_id
+        WHERE complaints.trash = 0
+    ";
     $statement = $conn->prepare($sql);
     $statement->execute();
     $result = $statement->fetchAll();
@@ -147,7 +154,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Category . Dashboard</title>
+    <title>Complaints . Dashboard</title>
 
     
     <link href="<?= PROOT; ?>dist/css/bootstrap.min.css" rel="stylesheet">
@@ -369,46 +376,40 @@
     <main>
         <span><?= $flash; ?></span>
         <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
-            <h1 class="h2">Categories</h1>
-            <div class="col-md-5">
-                <?= $output; ?>
-                <form class="row gy-2 gx-3 align-items-center mb-3" action="categories<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : ''); ?>" method="POST" enctype="multipart/form-data">
-                    <div class="col-auto">
-                        <label class="visually-hidden" for="category">Name</label>
-                        <input type="text" class="form-control" id="category" name="category" placeholder="eg, Bulling" value="<?= $category_value; ?>" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="add_submit" id="add_submit" class="btn btn-dark"><?= ((isset($_GET['edit'])) ? 'Edit': 'Add a'); ?> Category</button>
-                        <?php if (isset($_GET['edit'])): ?>
-                            <a href="<?= PROOT; ?>admin/categories" class="btn btn-secondary">Cancel</a>
-                        <?php endif; ?>
-                    </div>
-                </form>
-
-     
-
-                <table class="table table-striped table-bordered table-sm" style="width: auto; margin: 0 auto;">
+            <h1 class="h2">Complaints</h1>
+            <div class="col-md-10">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th></th>
+                            <th></th>
+                            <th>ID</th>
                             <th>Category</th>
+                            <th>Content</th>
                             <th>Date Added</th>
+                            <th>By</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($result as $row): ?>
+                        <?php $i = 1; foreach ($result as $row): ?>
                             <tr>
                                 <td>
-                                    <a href="categories?edit=<?= $row['id']; ?>" class="badge bg-warning">Edit</a>
+                                    <a href="complaints?view=<?= $row['id']; ?>" class="badge bg-info">View</a>
                                 </td>
-                                <td><?= $row['category']; ?></td>
+                                <td><?= $i; ?></td>
+                                <td></td>
+                                <td><?= ucwords($row['category']); ?></td>
+                                <td><?= substr($row['complaint_message'], 0, 120); ?>...</td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
+                                <td><?= ucwords($row['fullname']); ?></td>
+                                <td><?= $row['complaint_status']; ?></td>
                                 <td>
-                                    <a href="categories?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
+                                    <a href="complaints?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php $i++; endforeach; ?>
                     </tbody>
                 </table>
             </div>
