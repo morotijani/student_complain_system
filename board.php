@@ -6,45 +6,61 @@ if (!student_is_logged_in()) {
     student_login_redirect();
 }
 
+$complaint_date = ((isset($_POST['complaint_date']) ? sanitize($_POST['complaint_date']) : ''));
+$message = ((isset($_POST['message']) ? sanitize($_POST['message']) : ''));
 if (isset($_POST['submit'])) {
-    $complaint_date = sanitize($_POST['complaint_date']);
-    $message = sanitize($_POST['message']);
 
     if (empty($_FILES)) {
         exit('$_FILES is empty - is file_uploads set to "Off" in php.ini?');
-    }
+        $fileNewName = '';
+    } else {
 
-    $file = $_FILES['file'];
-    $fileName = $_FILES['file']['name'];
-    $fileTmpName = $_FILES['file']['tmp_name'];
-    $fileSize = $_FILES['file']['size'];
-    $fileError = $_FILES['file']['error'];
-    $fileType = $_FILES['file']['type'];
+        $file = $_FILES['file'];
+        $fileName = $_FILES['file']['name'];
+        $fileTmpName = $_FILES['file']['tmp_name'];
+        $fileSize = $_FILES['file']['size'];
+        $fileError = $_FILES['file']['error'];
+        $fileType = $_FILES['file']['type'];
 
-    $fileExt = explode('.', $fileName);
-    $fileActualExt = strtolower(end($fileExt));
+        $fileExt = explode('.', $fileName);
+        $fileActualExt = strtolower(end($fileExt));
 
-    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+        $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+        if (in_array($fileActalExt, $allowed)) {
+            // code...
+            if ($fileError === 0) {
+                if ($fileSize < 1000000) {
+                    // code...
+                    $fileNewName = uniqid('', true) . "." . $fileActualExt;
+                    $fileDestination = 'dist/media/uploads/' . $fileNewName;
 
-    if (in_array($fileActalExt, $allowed)) {
-        // code...
-        if ($fileError === 0) {
-            if ($fileSize < 1000000) {
-                // code...
-                $fileNewName = uniqid('', true) . "." . $fileActualExt;
-                $fileDestination = 'dist/media/uploads/' . $fileNewName;
-
-                move_uploaded_file($fileTmpName, $fileDestination);
+                    move_uploaded_file($fileTmpName, $fileDestination);
 
 
+                } else {
+                    echo js_alert("Your file is too big!");
+                }
             } else {
-                echo "Your file is too big!";
+                echo js_alert("There was an error uploading your file!");
             }
         } else {
-            echo "There was an error uploading your file!";
+            echo js_alert("You cannot upload files of this type!");
         }
+    }
+
+    $complaint_id = uniqid('', true);
+    $createdAt = date("Y-m-d H:i:s");
+    $data = [$complaint_id, $user_id, $fileNewName, $message, $complaint_date, $createdAt];
+    $sql = "
+        INSERT INTO `complaints`(`complaint_id`, `student_id`, `complaint_document`, `complaint_message`, `complaint_date`, `createdAt`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ";
+    $statement = $conn->prepare($sql);
+    $result = $statement->execute($data);
+    if (isset($result)) {
+        $_SESSION['flash_success'] = 'New complain lodged successfully';
     } else {
-        echo "You cannot upload files of this type!";
+        echo js_alert('Something went wrong, please try again');
     }
 }
 
@@ -205,7 +221,7 @@ if (isset($_POST['submit'])) {
                 </ul>
             </nav>
         </div>
-
+        <?= $flash; ?>
         <div class="container my-3">
             <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
                 <img class="me-3" src="dist/media/logo.png" alt="" width="48" height="48">
@@ -277,12 +293,12 @@ if (isset($_POST['submit'])) {
                     <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="complaint_date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="">
+                            <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="" value="<?= $complaint_date; ?>">
                             <div class="form-text">date of the event happening</div>
                         </div>
                         <div class="mb-3">
                           <label for="message" class="form-label">Message</label>
-                          <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                          <textarea class="form-control" id="message" name="message" rows="3"><?= $message; ?></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="file" class="form-label">Document (optional)</label>
