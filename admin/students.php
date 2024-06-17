@@ -304,7 +304,7 @@
                             <tr>
                                 <td><?= $i; ?></td>
                                 <td><?= $row['student_id']; ?></td>
-                                <td><?= $row['student_email']; ?></td>
+                                <td><?= $row['email']; ?></td>
                                 <td><?= ucwords($row['fullname']); ?></td>
                                 <td><?= $row['level']; ?></td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
