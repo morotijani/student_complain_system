@@ -218,6 +218,7 @@ if (isset($_POST['submit'])) {
                 <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
                 <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
                 <li class="nav-item"><a href="profile" class="nav-link px-2 text-body-secondary">Hi <?= $user_data['first']; ?>!</a></li>
+                <li class="nav-item"><a href="profile" class="nav-link px-2 text-body-secondary">Profile</a></li>
                 <li class="nav-item"><a href="logout" class="nav-link px-2 text-body-secondary">Logout</a></li>
             </ul>
         </nav>
