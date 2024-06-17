@@ -364,7 +364,7 @@ function admin_has_permission($permission = 'admin') {
 
 
 
-// GET PRODUCT CATEGORY
+// GET complaints per students
 function get_complaint_per_student($student_id) {
 	global $conn;
 	$output = '';
@@ -417,24 +417,21 @@ function get_complaint_per_student($student_id) {
 	return $output;
 }
 
-function get_entire_category($child_id){
+function get_categories(){
 	global $conn;
-	$id = sanitize($child_id);
+	$output = '';
 	$sql = "
-	
-
-		SELECT p.category_parent AS 'pid', p.category AS 'parent', c.category_id AS 'cid', c.category AS 'child'
-		FROM mifo_category c
-		INNER JOIN mifo_category p
-		ON c.category_parent = p.category_id
-		WHERE c.category_id = '$id'";
-
+		SELECT * FROM categories 
+		ORDER BY category ASC
+	";
 	$statement = $conn->query($sql);
 	$categories = $statement->fetchAll();
 	foreach ($categories as $category) {
-		// code...
-	return $category;
+		$output = '
+			<option>'.ucwords($category["category"]).'</option>
+		';
 	}
+	return $output;
 }
 
 

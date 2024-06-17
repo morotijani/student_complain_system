@@ -1,37 +1,12 @@
-<?php 
+<?php
 
-    require_once ("db_connection/conn.php");
+require_once ("db_connection/conn.php");
 
-    if (!student_is_logged_in()) {
-        student_login_redirect();
-    }
+// if (student_is_logged_in()) {
+//    redirect(PROOT . 'board');
+// }
 
-    $error = '';
 
-    if ($_POST) {
-        
-
-        $sql = '
-            UPDATE students 
-            SET student_id = ?, fullname = ?, email = ?, level = ? 
-            WHERE id = ?
-        ';
-        $statement = $conn->prepare($sql);
-        $result = $statement->execute([
-            sanitize($_POST['student_id']), 
-            sanitize($_POST['student_fullname']), 
-            sanitize($_POST['student_email']), 
-            sanitize($_POST['student_level']),
-            $user_id
-        ]);
-        if (isset($result)) {
-            $_SESSION['flash_success'] = 'Profile detailes uploaded successfully!';
-            redirect(PROOT . 'profile');
-        } else {
-            echo js_alert('Something went wrong!');
-        }
-        
-    }
 
 ?>
 <!DOCTYPE html>
@@ -41,7 +16,7 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Student Complaint System</title>
+        <title>About  . Student Complaint System</title>
         <link href="dist/css/bootstrap.min.css" rel="stylesheet">
         <meta name="theme-color" content="#712cf9">
 
@@ -181,63 +156,44 @@
         <div class="container">
             <nav>
                 <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
                     <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
                     <li class="nav-item"><a href="board" class="nav-link px-2 text-body-secondary">Complaints</a></li>
-                    <li class="nav-item"><a href="profile" class="nav-link px-2 text-body-secondary">Hi <?= $user_data['first']; ?>!</a></li>
-                    <li class="nav-item"><a href="profile" class="nav-link px-2 text-body-secondary">Profile</a></li>
-                    <li class="nav-item"><a href="logout" class="nav-link px-2 text-body-secondary">Logout</a></li>
+                    <?php if (student_is_logged_in()): ?>
+                    <li class="nav-item">
+                        <a href="profile" class="nav-link px-2 text-body-secondary">
+                            Hello <?= $user_data['first']; ?>!
+                        </a>
+                    </li>
+                    <?php else: ?>
+                    <li class="nav-item"><a href="signup" class="nav-link px-2 text-body-secondary">Signup</a></li>
+                    <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
+                    <?php endif ?>
                 </ul>
             </nav>
         </div>
-        <?= $flash; ?>
-        <div class="container my-2">
-            <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
-                <img class="me-3" src="dist/media/logo.png" alt="" width="48" height="48">
-                <div class="lh-1">
-                  <h1 class="h6 mb-0 text-white lh-1">Profile &</h1>
-                  <small>Settings</small>
-                </div>
-            </div>
 
-            <div class="p-3 text-center bg-body-tertiary rounded-3">
-                <form method="POST" class="col-lg-8 mx-auto fs-5 text-muted">
-                    <p>
-                        <br><code class="mb-1"><?= $error; ?></code>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="student_id" name="student_id" placeholder="" value="<?= ((isset($_POST['student_id'])) ? sanitize($_POST['student_id']) : $user_data['student_id']); ?>" required>
-                            <label for="student_id">Student ID</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="student_fullname" name="student_fullname" placeholder="" value="<?= ((isset($_POST['student_fullname'])) ? sanitize($_POST['student_fullname']) : $user_data['fullname']); ?>" required>
-                            <label for="student_fullname">Student Full name</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com" value="<?= ((isset($_POST['student_email'])) ? sanitize($_POST['student_email']) : $user_data['email']); ?>" required>
-                            <label for="student_email">Student Email address</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="student_level" name="student_level" placeholder="name@example.com" value="<?= ((isset($_POST['student_level'])) ? sanitize($_POST['student_level']) : $user_data['level']); ?>" required>
-                            <label for="student_level">Student Level</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" value="<?= pretty_date($user_data['createdAt']); ?>" readonly>
-                            <label for="">Joined Date</label>
-                        </div>
-                        <div class="form-floating">
-                            <input type="password" class="form-control" id="student_password" name="student_password" placeholder="Password">
-                            <label for="student_password">Student Password</label>
-                        </div>
-                    </p>
-                    <div class="d-inline-flex gap-2 mb-5">
-                    <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
-                        Update profile
-                        <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-                    </button>
-                    <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="board">
-                        Go back
-                    </a>
-                </form>
+        <div class="container my-2">
+            <div class="p-5 text-center bg-body-tertiary rounded-3">
+                <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
+                <h1 class="text-body-emphasis">About us</h1>
+                <p class="col-lg-8 mx-auto fs-5 text-muted">
+                    This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                <div class="d-inline-flex gap-2 mb-5">
+                <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="board">
+                    Make a complaint
+                    <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
+                </a>
+                <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
+                    Go home
+                </button>
             </div>
         </div>
     </div>

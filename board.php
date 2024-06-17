@@ -270,8 +270,15 @@ if (isset($_POST['submit'])) {
                                 <div class="form-text">date of the event happening</div>
                             </div>
                             <div class="mb-3">
-                              <label for="message" class="form-label">Message</label>
-                              <textarea class="form-control" id="message" name="message" rows="3" required><?= $message; ?></textarea>
+                                <label for="complaint_date" class="form-label">Category</label>
+                                <select type="text" class="form-control" id="complaint_category" name="complaint_category" required>
+                                    <option></option>
+                                    <?= get_categories(); ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="3" required><?= $message; ?></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="file" class="form-label">Document (optional)</label>
