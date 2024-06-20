@@ -5,5 +5,3 @@
     unset($_SESSION['ComStudent']);
 
     redirect(PROOT . 'login');
-
-?>

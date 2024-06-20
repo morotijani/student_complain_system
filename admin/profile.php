@@ -6,138 +6,8 @@
         admn_login_redirect();
     }
 
-
-    function display_errors($errors) {
-        $display = '<ul class="bg-danger">';
-        foreach ($errors as $error) {
-            // code...
-            $display .= '<li class="text-light">' . $error . '</li>';
-        }
-        $display .= '</ul>';
-        return $display;
-    }
-
-
-    $category_value = isset($_POST['category']) ? sanitize($_POST['category']) : '';
-
-    // Edit Brand
-    if (isset($_GET['edit']) && !empty($_GET['edit'])) {
-        // code...
-        $edit_id = sanitize((int)$_GET['edit']);
-
-        $query = "
-            SELECT * FROM categories 
-            WHERE id = ? 
-            LIMIT 1
-        ";
-        $statement = $conn->prepare($query);
-        $statement->execute([$edit_id]);
-        $row = $statement->fetchAll();
-        $count = $statement->rowCount();
-        if ($count > 0) {
-            $category_value = $row[0]['category'];
-        } else {
-            $_SESSION['flash_error'] = 'Unknow brand!';
-            redirect(PROOT . 'admin/categories');
-        }
-    }
-
-    // Delete brand
-    if (isset($_GET['delete']) && !empty($_GET['delete'])) {
-        // code...
-        $delete_id = sanitize((int)$_GET['delete']);
-        $query = "
-            SELECT * FROM categories 
-            WHERE id = ? 
-            LIMIT 1
-        ";
-        $statement = $conn->prepare($query);
-        $statement->execute([$delete_id]);
-        $row = $statement->fetchAll();
-        $count = $statement->rowCount();
-        if ($count > 0) {
-            
-            $deleteQuery = "
-                DELETE FROM categories 
-                WHERE id = ? 
-            ";
-            $statement = $conn->prepare($deleteQuery);
-            $sub_result = $statement->execute([$delete_id]);
-            if ($sub_result) {
-                // delete all complaints associated with the deleting category.
-                $conn->query("DELETE FROM complaints WHERE category_id = '".$delete_id."'");
-
-                $_SESSION['flash_success'] = 'Category deleted!';
-                redirect(PROOT . 'admin/categories');
-            } else {
-                echo js_alert('Something went wrong, please try again.');
-            }
-        } else {
-            $_SESSION['flash_error'] = 'Unknow category!';
-            redirect(PROOT . 'admin/categories');
-        }
-    }
-
-    // if add form is submitted
-    $output = '';
-    $errors = array();
-    if (isset($_POST['add_submit'])) {
-
-        $category = sanitize($_POST['category']);
-        // check if brand is blank
-        if ($category == '') {
-            // code...
-            $errors[] .= 'You must enter a category.';
-        }
-
-        // check if category exist in database;
-        $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category'")->rowCount();
-        if (isset($_GET['edit'])) {
-            $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category' AND id != '$edit_id'")->rowCount();
-        }
-        if ($count_brand > 0) {
-            // code...
-            $errors[] .= $category . ' already exist. Please choose another category.';
-        }
-
-        // display errors
-        if (!empty($errors)) {
-            $output = display_errors($errors);
-        } else {
-            // add brand to database
-            $sql = "
-                INSERT INTO categories (category) 
-                VALUES (?)
-            ";
-            if (isset($_GET['edit'])) {
-                // code...
-                $sql = "
-                    UPDATE categories 
-                    SET category = ?   
-                    WHERE id = '$edit_id'
-                ";
-            }
-            $statement = $conn->prepare($sql);
-            $result = $statement->execute([$category]);
-            if (isset($result)) {
-                // code...
-                $_SESSION['flash_success'] = $category . ' category ' . ((isset($_GET['edit'])) ? 'edited' : 'added') . '!';
-                redirect(PROOT . 'admin/categories');
-            } else {
-                echo js_alert('Something went wrong, please try again.');
-                redirect(PROOT . 'admin/categories');
-            }
-        }
-    }
-
-    // get brands from database    
-    $sql = "SELECT * FROM categories";
-    $statement = $conn->prepare($sql);
-    $statement->execute();
-    $result = $statement->fetchAll();
-
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
   <head>
@@ -147,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Category . Dashboard</title>
+    <title>Profile . Dashboard</title>
 
     
     <link href="<?= PROOT; ?>dist/css/bootstrap.min.css" rel="stylesheet">
@@ -366,53 +236,21 @@
         </div>
     </nav>
 
-    <main>
-        <span><?= $flash; ?></span>
-        <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
-            <h1 class="h2">Categories</h1>
-            <div class="col-md-5">
-                <?= $output; ?>
-                <form class="row gy-2 gx-3 align-items-center mb-3" action="categories<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : ''); ?>" method="POST" enctype="multipart/form-data">
-                    <div class="col-auto">
-                        <label class="visually-hidden" for="category">Name</label>
-                        <input type="text" class="form-control" id="category" name="category" placeholder="eg, Bulling" value="<?= $category_value; ?>" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" name="add_submit" id="add_submit" class="btn btn-dark"><?= ((isset($_GET['edit'])) ? 'Edit': 'Add a'); ?> Category</button>
-                        <?php if (isset($_GET['edit'])): ?>
-                            <a href="<?= PROOT; ?>admin/categories" class="btn btn-secondary">Cancel</a>
-                        <?php endif; ?>
-                    </div>
-                </form>
-
-     
-
-                <table class="table table-striped table-bordered table-sm" style="width: auto; margin: 0 auto;">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Category</th>
-                            <th>Date Added</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($result as $row): ?>
-                            <tr>
-                                <td>
-                                    <a href="categories?edit=<?= $row['id']; ?>" class="badge bg-warning">Edit</a>
-                                </td>
-                                <td><?= $row['category']; ?></td>
-                                <td><?= pretty_date($row['createdAt']); ?></td>
-                                <td>
-                                    <a href="categories?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+	<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Profile Details</h1>
         </div>
+
+        <div class="row justify-content-center">
+	        <div class="col-md-6">
+		        <div class="card">
+		        	<div class="card-body">
+		        		<?= get_admin_profile(); ?>
+		        	</div>
+		        </div>
+	        </div>
+        </div>
+
     </main>
 
     <script src="<?= PROOT; ?>dist/js/popper.min.js"></script>

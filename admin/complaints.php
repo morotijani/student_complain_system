@@ -360,8 +360,8 @@
                         <li class="nav-item"><a class="nav-link" href="categories">Categories</a></li>
                         <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
                         <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Hello Admin!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout">
                                 Logout

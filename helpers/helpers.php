@@ -664,7 +664,7 @@ function get_admin_profile() {
 	$output = '';
 
 	$query = "
-		SELECT * FROM mifo_admin 
+		SELECT * FROM admin 
 		WHERE admin_id = :admin_id 
 		AND admin_trash = :admin_trash 
 		LIMIT 1

@@ -269,7 +269,7 @@
                         <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
                         <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Hello Admin!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout">
                                 Logout
@@ -284,7 +284,7 @@
     <main>
         <span><?= $flash; ?></span>
         <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
-            <h1 class="h2">Complaints</h1>
+            <h1 class="h2">Students</h1>
             <div class="col-md-10">
                 <table class="table table-striped table-hover">
                     <thead>
