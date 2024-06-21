@@ -137,7 +137,8 @@
         ON categories.id = complaints.category_id
         INNER JOIN students 
         ON students.id = complaints.student_id
-        WHERE complaints.trash = 0
+        WHERE complaints.trash = 0 
+        ORDER BY complaints.createdAt DESC
     ";
     $statement = $conn->prepare($sql);
     $statement->execute();
@@ -376,6 +377,44 @@
     <main>
         <span><?= $flash; ?></span>
         <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
+            <?php 
+                if (isset($_GET['view']) && !empty($_GET['view'])):
+                    $view_id = (int)$_GET['view'];
+                    $count_view = $conn->query("SELECT * FROM complaints WHERE id = $view_id")->rowCount();
+                    $view = "
+                        SELECT * FROM complaints 
+                        INNER JOIN categories 
+                        ON categories.id = complaints.category_id 
+                        WHERE complaints.id = ? 
+                        LIMIT 1
+                    ";
+                    $statement = $conn->prepare($view);
+                    $statement->execute([$view_id]);
+                    $row_view = $statement->fetchAll();
+
+                    if ($count_view > 0) {
+                ?>
+
+                        <div class="card">
+                            <div class="card-body">
+                                Category: <?= ucwords($row_view[0]["category"]); ?>
+                                <br>
+                                Event Date: <?= pretty_date_only($row_view[0]["complaint_date"]); ?>
+                                <br>
+                                <hr>
+                                <?= nl2br($row_view[0]['complaint_message']); ?>
+                                <br>
+                                <?= (($row_view[0]['complaint_document'] != '' ) ? '<img src="'.$row_view[0]["complaint_document"].'" class="img-thumbnail">' : ''); ?>
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        $_SESSION['flash_error'] = 'Complaint cannot be found!';
+                        redirect('complaints');
+                    }
+
+            ?>
+            <?php else: ?>
             <h1 class="h2">Complaints</h1>
             <div class="col-md-10">
                 <table class="table table-striped table-hover">
@@ -413,6 +452,7 @@
                     </tbody>
                 </table>
             </div>
+            <?php endif ?>
         </div>
     </main>
 
