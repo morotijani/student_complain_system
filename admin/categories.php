@@ -367,7 +367,7 @@
     </nav>
 
     <main>
-        <span><?= $flash; ?></span>
+        <?= $flash; ?>
         <div class="row justify-content-center position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-body-tertiary">
             <h1 class="h2">Categories</h1>
             <div class="col-md-5">

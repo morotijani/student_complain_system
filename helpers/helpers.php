@@ -365,7 +365,7 @@ function get_complaint_per_student($student_id) {
 	$output = '';
 
 	$query = "
-		SELECT * FROM complaints 
+		SELECT *, complaints.id AS cid FROM complaints 
 		INNER JOIN categories 
 		ON categories.id = complaints.category_id
 		WHERE complaints.student_id = ?
@@ -387,12 +387,24 @@ function get_complaint_per_student($student_id) {
 		';
 	}
 	foreach ($resutl as $row) {
+		$status = "new";
+        $status_bg = "warning";
+        if ($row['complaint_status'] == 1) {
+            // code...
+            $status = "processing";
+            $status_bg = "info";
+        } else if ($row['complaint_status'] == 2) {
+            $status = "Done";
+            $status_bg = "success";
+        }
+
 		$output .= '
 			<div class="d-flex text-body-secondary pt-3">
                 <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
                 <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
                     <div class="d-flex justify-content-between">
                         <strong class="text-gray-dark">'.ucwords($row["category"]) . ' / ' . $row["complaint_id"].'</strong>
+                        <span class="badge bg-'.$status_bg.'">'.$status.'</span>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a>
                     </div>
                     <span class="d-block">' . substr($row["complaint_message"], 0, 180) . ' ...</span>
@@ -412,13 +424,15 @@ function get_complaint_per_student($student_id) {
 				      		<br>
 				      		Event Date: '.pretty_date_only($row["complaint_date"]).'
 				      		<br>
+				      		Status: <span class="badge bg-'.$status_bg.'">'.$status.'</span>
 				      		<hr>
 				        	' . nl2br($row['complaint_message']) . '
 				        	<br>
-				        	' . (($row['complaint_document'] != '' ) ? '<img src="'.$row["complaint_document"].'" class="img-thumbnail">' : '') . '
+				        	<a href="'.PROOT.'dist/media/uploads/'.$row["complaint_document"].'" target="_blank">view file . '.$row["complaint_document"].'</a>
 				      	</div>
 				      	<div class="modal-footer">
 				        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				        	<a href="' . PROOT . 'board?delete=' . $row["cid"] . '" class="btn btn-danger">Delete</a>
 				      	</div>
 				    </div>
 			  	</div>

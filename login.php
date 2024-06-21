@@ -31,6 +31,10 @@
                 $error = 'Unkown student.';
             }
 
+            if ($row['trash'] == '1') {
+                $error = 'Your account has been disabled.';
+            }
+
             if (!empty($error)) {
                 $error;
             } else {
@@ -192,7 +196,6 @@
                     <li class="nav-item"><a href="index" class="nav-link px-2 text-body-secondary">Home</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Signup</a></li>
                     <li class="nav-item"><a href="login" class="nav-link px-2 text-body-secondary">Login</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
                     <li class="nav-item"><a href="about" class="nav-link px-2 text-body-secondary">About</a></li>
                 </ul>
             </nav>
@@ -217,13 +220,14 @@
                         </div>
                     </p>
                     <div class="d-inline-flex gap-2 mb-5">
-                    <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
-                        Sign in
-                        <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-                    </button>
-                    <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
-                        Go home
-                    </a>
+                        <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
+                            Sign in
+                            <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
+                        </button>
+                        <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
+                            Go home
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

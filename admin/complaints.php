@@ -42,12 +42,12 @@
         }
     }
 
-    // Delete brand
+    // Delete complaint
     if (isset($_GET['delete']) && !empty($_GET['delete'])) {
         // code...
         $delete_id = sanitize((int)$_GET['delete']);
         $query = "
-            SELECT * FROM categories 
+            SELECT * FROM complaints 
             WHERE id = ? 
             LIMIT 1
         ";
@@ -58,81 +58,62 @@
         if ($count > 0) {
             
             $deleteQuery = "
-                DELETE FROM categories 
+                DELETE FROM complaints 
                 WHERE id = ? 
             ";
             $statement = $conn->prepare($deleteQuery);
             $sub_result = $statement->execute([$delete_id]);
             if ($sub_result) {
-                // delete all complaints associated with the deleting category.
-                $conn->query("DELETE FROM complaints WHERE category_id = '".$delete_id."'");
 
-                $_SESSION['flash_success'] = 'Category deleted!';
-                redirect(PROOT . 'admin/categories');
+                $_SESSION['flash_success'] = 'Complaint deleted successfully!';
+                redirect(PROOT . 'admin/complaints');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
         } else {
-            $_SESSION['flash_error'] = 'Unknow category!';
-            redirect(PROOT . 'admin/categories');
+            $_SESSION['flash_error'] = 'Can not delete complaint!';
+            redirect(PROOT . 'admin/complaints');
         }
     }
 
-    // if add form is submitted
-    $output = '';
-    $errors = array();
-    if (isset($_POST['add_submit'])) {
-
-        $category = sanitize($_POST['category']);
-        // check if brand is blank
-        if ($category == '') {
-            // code...
-            $errors[] .= 'You must enter a category.';
-        }
-
-        // check if category exist in database;
-        $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category'")->rowCount();
-        if (isset($_GET['edit'])) {
-            $count_brand = $conn->query("SELECT * FROM categories WHERE category = '$category' AND id != '$edit_id'")->rowCount();
-        }
-        if ($count_brand > 0) {
-            // code...
-            $errors[] .= $category . ' already exist. Please choose another category.';
-        }
-
-        // display errors
-        if (!empty($errors)) {
-            $output = display_errors($errors);
-        } else {
-            // add brand to database
-            $sql = "
-                INSERT INTO categories (category) 
-                VALUES (?)
+    // Complete complaint
+    if (isset($_GET['complete']) && !empty($_GET['complete'])) {
+        // code...
+        $complete_id = sanitize((int)$_GET['complete']);
+        $query = "
+            SELECT * FROM complaints 
+            WHERE id = ? 
+            LIMIT 1
+        ";
+        $statement = $conn->prepare($query);
+        $statement->execute([$complete_id]);
+        $row = $statement->fetchAll();
+        $count = $statement->rowCount();
+        if ($count > 0) {
+            
+            $completeQuery = "
+                UPDATE complaints 
+                SET complaint_status = ? 
+                WHERE id = ? 
             ";
-            if (isset($_GET['edit'])) {
-                // code...
-                $sql = "
-                    UPDATE categories 
-                    SET category = ?   
-                    WHERE id = '$edit_id'
-                ";
-            }
-            $statement = $conn->prepare($sql);
-            $result = $statement->execute([$category]);
-            if (isset($result)) {
-                // code...
-                $_SESSION['flash_success'] = $category . ' category ' . ((isset($_GET['edit'])) ? 'edited' : 'added') . '!';
-                redirect(PROOT . 'admin/categories');
+            $statement = $conn->prepare($completeQuery);
+            $sub_result = $statement->execute([2, $complete_id]);
+            if ($sub_result) {
+
+                $_SESSION['flash_success'] = 'Complaint completed successfully!';
+                redirect(PROOT . 'admin/complaints');
             } else {
                 echo js_alert('Something went wrong, please try again.');
-                redirect(PROOT . 'admin/categories');
             }
+        } else {
+            $_SESSION['flash_error'] = 'Can not complete complaint!';
+            redirect(PROOT . 'admin/complaints');
         }
     }
 
     // get brands from database    
     $sql = "
-        SELECT * FROM complaints 
+        SELECT *, complaints.id AS cid FROM complaints 
         INNER JOIN categories 
         ON categories.id = complaints.category_id
         INNER JOIN students 
@@ -380,34 +361,93 @@
             <?php 
                 if (isset($_GET['view']) && !empty($_GET['view'])):
                     $view_id = (int)$_GET['view'];
-                    $count_view = $conn->query("SELECT * FROM complaints WHERE id = $view_id")->rowCount();
                     $view = "
-                        SELECT * FROM complaints 
+                        SELECT *, complaints.id AS cid FROM complaints 
                         INNER JOIN categories 
                         ON categories.id = complaints.category_id 
+                        INNER JOIN students 
+                        ON students.id = complaints.student_id
                         WHERE complaints.id = ? 
-                        LIMIT 1
-                    ";
+                        LIMIT 1";
                     $statement = $conn->prepare($view);
                     $statement->execute([$view_id]);
                     $row_view = $statement->fetchAll();
+                    $count_view = $statement->rowCount();
 
                     if ($count_view > 0) {
-                ?>
+                        // update status on complaint
+                        $conn->query("UPDATE complaints SET complaint_status = 1 WHERE id = $view_id");
 
-                        <div class="card">
-                            <div class="card-body">
+                        $status = "new";
+                        $status_bg = "warning";
+                        if ($row_view[0]['complaint_status'] == 1) {
+                            // code...
+                            $status = "processing";
+                            $status_bg = "info";
+                        } else if ($row_view[0]['complaint_status'] == 2) {
+                            $status = "Done";
+                            $status_bg = "success";
+                        }
+                        
+                ?>
+                    <h1 class="h2">View a complaint on <?= $row_view[0]['complaint_id']; ?></h1>
+                    <a href="complaints" class=""><< go back</a>
+                    <div class="card">
+                        <div class="card-body">
+                            <p>
                                 Category: <?= ucwords($row_view[0]["category"]); ?>
                                 <br>
                                 Event Date: <?= pretty_date_only($row_view[0]["complaint_date"]); ?>
+                                <br>
+                                By: <a href="javascript:;" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#studentModal_<?= $row_view[0]['student_id']; ?>"><?= ucwords($row_view[0]['fullname']); ?></a>
+                                <br>
+                                Status: <span class="badge bg-<?= $status_bg ?>"><?= $status ?></span>
                                 <br>
                                 <hr>
                                 <?= nl2br($row_view[0]['complaint_message']); ?>
                                 <br>
                                 <?= (($row_view[0]['complaint_document'] != '' ) ? '<img src="'.$row_view[0]["complaint_document"].'" class="img-thumbnail">' : ''); ?>
+                            </p>
+                            <div class="d-inline-flex gap-2 mb-5">
+                                <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?complete=<?= $row_view[0]['cid']; ?>" name="submit_form">
+                                    Complete complaint
+                                    <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
+                                </a>
+                                <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?delete=<?= $row_view[0]['cid']; ?>">
+                                    Delete complaint
+                                </a>
                             </div>
                         </div>
-                        <?php
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="studentModal_<?= $row_view[0]['student_id']; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="studentModalLabel_<?= $row_view[0]['student_id']; ?>" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="studentModalLabel_<?= $row_view[0]['student_id']; ?>">Complainer details</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        <table class="table table-sm table-striped table-bordered">
+                                            <tbody>
+                                                <tr><td>ID: <?= $row_view[0]['student_id']; ?></td></tr>
+                                                <tr><td>Email: <?= $row_view[0]['email']; ?></td><tr>
+                                                <tr><td>Full name: <?= ucwords($row_view[0]['fullname']); ?></td><tr>
+                                                <tr><td>Level: <?= $row_view[0]['level']; ?></td><tr>
+                                                <tr><td>Joined date: <?= pretty_date($row_view[0]['createdAt']); ?></td><tr>
+                                            </tbody>
+                                        </table>
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php
                     } else {
                         $_SESSION['flash_error'] = 'Complaint cannot be found!';
                         redirect('complaints');
@@ -421,32 +461,41 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th></th>
                             <th>ID</th>
                             <th>Category</th>
                             <th>Content</th>
                             <th>Date Added</th>
                             <th>By</th>
                             <th>Status</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i = 1; foreach ($result as $row): ?>
+                        <?php 
+                            $i = 1; 
+                            foreach ($result as $row): 
+                                $status = "new";
+                                $status_bg = "warning";
+                                if ($row['complaint_status'] == 1) {
+                                    // code...
+                                    $status = "processing";
+                                    $status_bg = "info";
+                                } else if ($row['complaint_status'] == 2) {
+                                    $status = "Done";
+                                    $status_bg = "success";
+                                }
+                        ?>
                             <tr>
-                                <td>
-                                    <a href="complaints?view=<?= $row['id']; ?>" class="badge bg-info">View</a>
-                                </td>
                                 <td><?= $i; ?></td>
-                                <td></td>
+                                <td>
+                                    <a href="complaints?view=<?= $row['cid']; ?>" class="text-decoration-none">
+                                        <?= ucwords($row['complaint_id']); ?>
+                                    </a>
+                                </td>
                                 <td><?= ucwords($row['category']); ?></td>
                                 <td><?= substr($row['complaint_message'], 0, 120); ?>...</td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
                                 <td><?= ucwords($row['fullname']); ?></td>
-                                <td><?= $row['complaint_status']; ?></td>
-                                <td>
-                                    <a href="complaints?delete=<?= $row['id']; ?>" class="badge bg-danger">Delete</a>
-                                </td>
+                                <td><span class="badge bg-<?= $status_bg ?>"><?= $status ?></td>
                             </tr>
                         <?php $i++; endforeach; ?>
                     </tbody>

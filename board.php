@@ -6,6 +6,41 @@ if (!student_is_logged_in()) {
     student_login_redirect();
 }
 
+// Delete complaint
+if (isset($_GET['delete']) && !empty($_GET['delete'])) {
+    // code...
+    $delete_id = sanitize((int)$_GET['delete']);
+    $query = "
+        SELECT * FROM complaints 
+        WHERE id = ? 
+        LIMIT 1
+    ";
+    $statement = $conn->prepare($query);
+    $statement->execute([$delete_id]);
+    $row = $statement->fetchAll();
+    $count = $statement->rowCount();
+    if ($count > 0) {
+        
+        $deleteQuery = "
+            DELETE FROM complaints 
+            WHERE id = ? 
+        ";
+        $statement = $conn->prepare($deleteQuery);
+        $sub_result = $statement->execute([$delete_id]);
+        if ($sub_result) {
+
+            $_SESSION['flash_success'] = 'Complaint deleted successfully!';
+            redirect(PROOT . 'board');
+        } else {
+            echo js_alert('Something went wrong, please try again.');
+        }
+    } else {
+        $_SESSION['flash_error'] = 'Can not delete complaint!';
+        redirect(PROOT . 'board');
+    }
+}
+
+
 $complaint_date = ((isset($_POST['complaint_date']) ? sanitize($_POST['complaint_date']) : ''));
 $message = ((isset($_POST['message']) ? sanitize($_POST['message']) : ''));
 $fileNewName = '';
@@ -39,12 +74,15 @@ if (isset($_POST['submit'])) {
 
                 } else {
                     echo js_alert("Your file is too big!");
+                    exit('<a href="javascript:history.go(-1)">go back</a>');
                 }
             } else {
                 echo js_alert("There was an error uploading your file!");
+                exit('<a href="javascript:history.go(-1)">go back</a>');
             }
         } else {
             echo js_alert("You cannot upload files of this type!");
+            exit('<a href="javascript:history.go(-1)">go back</a>');
         }
     }
 
@@ -236,11 +274,8 @@ if (isset($_POST['submit'])) {
         <div class="p-5 text-center bg-body-tertiary rounded-3">
             <h1 class="text-body-emphasis">you've made <?= count_complaints_per_students($user_id); ?> complaints</h1>
             <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Make a complaint
+                Lodge complaint
                 <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
-            </button>
-            <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
-                Complaint status
             </button>
         </div>
 

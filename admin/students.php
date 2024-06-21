@@ -7,45 +7,46 @@
     }
 
     // Disable student
-    if (isset($_GET['delete']) && !empty($_GET['delete'])) {
+    if (isset($_GET['disable']) && !empty($_GET['disable'])) {
         // code...
-        $delete_id = sanitize((int)$_GET['delete']);
+        $disable_id = sanitize((int)$_GET['disable']);
+        $status = sanitize((int)$_GET['status']);
         $query = "
-            SELECT * FROM categories 
+            SELECT * FROM students 
             WHERE id = ? 
             LIMIT 1
         ";
         $statement = $conn->prepare($query);
-        $statement->execute([$delete_id]);
+        $statement->execute([$disable_id]);
         $row = $statement->fetchAll();
         $count = $statement->rowCount();
         if ($count > 0) {
             
             $deleteQuery = "
-                DELETE FROM categories 
+                UPDATE students 
+                SET trash = ? 
                 WHERE id = ? 
             ";
             $statement = $conn->prepare($deleteQuery);
-            $sub_result = $statement->execute([$delete_id]);
+            $sub_result = $statement->execute([($status == 2 ? 0 : 1), $disable_id]);
             if ($sub_result) {
-                // delete all complaints associated with the deleting category.
-                $conn->query("DELETE FROM complaints WHERE category_id = '".$delete_id."'");
 
-                $_SESSION['flash_success'] = 'Category deleted!';
-                redirect(PROOT . 'admin/categories');
+                $_SESSION['flash_success'] = 'Student successfully '.($status == 2 ? 'Re-enabled' : 'Dsiabled').'!';
+                redirect(PROOT . 'admin/students');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
         } else {
-            $_SESSION['flash_error'] = 'Unknow category!';
-            redirect(PROOT . 'admin/categories');
+            $_SESSION['flash_error'] = 'Student not found!';
+            redirect(PROOT . 'admin/students');
         }
     }
 
     // get all student from database    
     $sql = "
         SELECT * FROM students 
-        WHERE trash = 0
+        -- WHERE trash = 0 
+        ORDER BY createdAt ASC
     ";
     $statement = $conn->prepare($sql);
     $statement->execute();
@@ -268,6 +269,7 @@
                         <li class="nav-item"><a class="nav-link" href="categories">Categories</a></li>
                         <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
                         <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
@@ -303,14 +305,17 @@
                         <?php $i = 1; foreach ($result as $row): ?>
                             <tr>
                                 <td><?= $i; ?></td>
-                                <td><?= $row['student_id']; ?></td>
+                                <td>
+                                    <?= $row['student_id']; ?>
+                                    <?= (($row["trash"] == 0) ? '' : '<br><span class="text-warning small">disabed</span>'); ?>
+                                </td>
                                 <td><?= $row['email']; ?></td>
                                 <td><?= ucwords($row['fullname']); ?></td>
                                 <td><?= $row['level']; ?></td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
                                 <td><?= pretty_date($row['updatedAt']); ?></td>
                                 <td>
-                                    <a href="students?delete=<?= $row['id']; ?>" class="badge bg-danger">Disable student</a>
+                                    <a href="<?= PROOT; ?>admin/students?disable=<?= $row['id']; ?>&status=<?= (($row["trash"] == 0) ? 1 : 2); ?>" class="btn btn-sm btn-<?= (($row["trash"] == 0) ? 'danger' : 'primary'); ?>"><?= (($row["trash"] == 0) ? 'Disable' : 'Enable'); ?> student</a>
                                 </td>
                             </tr>
                         <?php $i++; endforeach; ?>

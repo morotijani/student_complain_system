@@ -6,16 +6,26 @@
         student_login_redirect();
     }
 
-    $error = '';
-
     if ($_POST) {
-        
-
+        $student_password = sanitize($_POST['student_password']);
         $sql = '
             UPDATE students 
             SET student_id = ?, fullname = ?, email = ?, level = ? 
             WHERE id = ?
         ';
+        if ($student_password != '' || !empty($student_password)) {
+            if (strlen($student_password) < 6) {
+                $_SESSION['flash_error'] = 'Password must be at least 6 characters';
+                redirect(PROOT . 'profile');
+            } else {
+                $password = password_hash($student_password, PASSWORD_BCRYPT);
+                $sql = '
+                    UPDATE students 
+                    SET student_id = ?, fullname = ?, email = ?, level = ?, password = "' . $password . '"
+                    WHERE id = ?
+                ';
+            }
+        }
         $statement = $conn->prepare($sql);
         $result = $statement->execute([
             sanitize($_POST['student_id']), 
@@ -203,7 +213,6 @@
             <div class="p-3 text-center bg-body-tertiary rounded-3">
                 <form method="POST" class="col-lg-8 mx-auto fs-5 text-muted">
                     <p>
-                        <br><code class="mb-1"><?= $error; ?></code>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="student_id" name="student_id" placeholder="" value="<?= ((isset($_POST['student_id'])) ? sanitize($_POST['student_id']) : $user_data['student_id']); ?>" required>
                             <label for="student_id">Student ID</label>

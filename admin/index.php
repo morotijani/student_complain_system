@@ -224,10 +224,11 @@
                         <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
                         <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
                         <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <svg class="bi" width="24" height="24"><use xlink:href="#arrow-left"/></svg>
+                            <a class="nav-link" href="logout">
+                                Logout
                             </a>
                         </li>
                     </ul>

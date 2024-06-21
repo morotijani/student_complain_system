@@ -224,6 +224,7 @@
                         <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
                         <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
                         <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout">
@@ -235,7 +236,7 @@
             </div>
         </div>
     </nav>
-
+    <?= $flash; ?>
 	<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Profile Details</h1>
