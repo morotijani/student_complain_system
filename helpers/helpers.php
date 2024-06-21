@@ -154,6 +154,14 @@ function send_email($name, $to, $subject, $body) {
     }
 }
 
+// go back
+function goBack() {
+	$previous = "javascript:history.go(-1)";
+	if (isset($_SERVER['HTTP_REFERER'])) {
+	    $previous = $_SERVER['HTTP_REFERER'];
+	}
+	return $previous;
+}
 
 
 
@@ -428,7 +436,8 @@ function get_complaint_per_student($student_id) {
 				      		<hr>
 				        	' . nl2br($row['complaint_message']) . '
 				        	<br>
-				        	<a href="'.PROOT.'dist/media/uploads/'.$row["complaint_document"].'" target="_blank">view file . '.$row["complaint_document"].'</a>
+				        	<br>
+				        	<a href="' . PROOT . 'dist/media/uploads/'.$row["complaint_document"].'" target="_blank">view file . ' . $row["complaint_document"] . '</a>
 				      	</div>
 				      	<div class="modal-footer">
 				        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

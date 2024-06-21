@@ -368,7 +368,8 @@
                         INNER JOIN students 
                         ON students.id = complaints.student_id
                         WHERE complaints.id = ? 
-                        LIMIT 1";
+                        LIMIT 1
+                    ";
                     $statement = $conn->prepare($view);
                     $statement->execute([$view_id]);
                     $row_view = $statement->fetchAll();
@@ -406,7 +407,10 @@
                                 <hr>
                                 <?= nl2br($row_view[0]['complaint_message']); ?>
                                 <br>
-                                <?= (($row_view[0]['complaint_document'] != '' ) ? '<img src="'.$row_view[0]["complaint_document"].'" class="img-thumbnail">' : ''); ?>
+                                <br>
+                                <?php if ($row_view[0]['complaint_document'] != ''): ?>
+                                    <a href="<?= PROOT . 'dist/media/uploads/'.$row_view[0]["complaint_document"]; ?>" target="_blank">view file . <?= $row_view[0]["complaint_document"]; ?></a>
+                                <?php endif ?>
                             </p>
                             <div class="d-inline-flex gap-2 mb-5">
                                 <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?complete=<?= $row_view[0]['cid']; ?>" name="submit_form">
