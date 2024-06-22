@@ -11,11 +11,12 @@
     $fullname = ((isset($_POST['fullname']) && !empty($_POST['fullname'])) ? sanitize($_POST['fullname']) : '');
     $level = ((isset($_POST['level']) && !empty($_POST['level'])) ? sanitize($_POST['level']) : '');
     $email = ((isset($_POST['email']) && !empty($_POST['email'])) ? sanitize($_POST['email']) : '');
-    $password = sanitize($_POST['user_password']);
-    $createdAt = date('Y-m-d H:i:s A');
 
     if (isset($_POST['submit_form'])) {
 
+        $password = sanitize($_POST['user_password']);
+        $password_repeat = sanitize($_POST['repeat_password']);
+        $createdAt = date('Y-m-d H:i:s A');
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
         $sql = "SELECT * FROM students WHERE email = :email";
@@ -25,19 +26,37 @@
         if ($statement->rowCount() > 0) {
             $output =  '<div class="alert alert-secondary" role="alert">User account already exist.<div>';
         } else {
-            $data = [$student_id, $fullname, $email, $level, $password_hash, $createdAt];
-            $query = "
-                INSERT INTO students (student_id, fullname, email, level, password, createdAt) 
-                VALUES (?, ?, ?, ?, ?, ?); 
-            ";
-            $statement = $conn->prepare($query);
-            $result = $statement->execute($data);
-            $user_id = $conn->lastInsertId();
 
-            if (isset($result)) {
-                $_SESSION['flash_success'] = 'Account successfully setup, go ahead and login';
-                redirect(PROOT . 'login');
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // code...
+                $output = 'Invalid email provided!';
             }
+
+            if (strlen($password) < 6) {
+                $output = 'Password must be at least 6 characters!';
+            }
+
+            if ($password != $password_repeat) {
+                $output = 'The new password and confirm new password does not match!';
+            }
+
+            if (empty($output)) {
+                // code...
+                $data = [$student_id, $fullname, $email, $level, $password_hash, $createdAt];
+                $query = "
+                    INSERT INTO students (student_id, fullname, email, level, password, createdAt) 
+                    VALUES (?, ?, ?, ?, ?, ?); 
+                ";
+                $statement = $conn->prepare($query);
+                $result = $statement->execute($data);
+                $user_id = $conn->lastInsertId();
+
+                if (isset($result)) {
+                    $_SESSION['flash_success'] = 'Account successfully setup, go ahead and login';
+                    redirect(PROOT . 'login');
+                }
+            }
+
         }
     }
 
@@ -207,22 +226,22 @@
                     <p class="mb-3">
                         Create an account. 
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="student_id" name="student_id" placeholder="Student ID" />
+                            <input class="form-control" type="text" id="student_id" name="student_id" placeholder="Student ID" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Full name" />
+                            <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Full name" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="level" name="level" placeholder="Level" />
+                            <input class="form-control" type="text" id="level" name="level" placeholder="Level" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="email" id="email" name="email" placeholder="Email" />
+                            <input class="form-control" type="email" id="email" name="email" placeholder="Email" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="password" id="user_password" name="user_password" placeholder="Password" />
+                            <input class="form-control" type="password" id="user_password" name="user_password" placeholder="Password" required />
                         </div>
                         <div class="mb-0">
-                            <input class="form-control" type="password" id="repeat_password" name="repeat_password" placeholder="Repeat password" />
+                            <input class="form-control" type="password" id="repeat_password" name="repeat_password" placeholder="Repeat password" required />
                         </div>
                     </p>
                     <div class="d-inline-flex gap-2 mb-5">
@@ -230,7 +249,7 @@
                             Setup account
                             <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
                         </button>
-                        <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
+                        <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="login">
                             Login
                         </a>
                     </div>
