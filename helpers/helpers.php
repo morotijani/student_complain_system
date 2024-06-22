@@ -370,7 +370,21 @@ function admin_permission_redirect($url = 'login') {
 // GET complaints per students
 function get_complaint_per_student($student_id) {
 	global $conn;
-	$output = '';
+	$output = '
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">ID</th>
+		      <th scope="col">Category</th>
+		      <th scope="col">Event date</th>
+		      <th scope="col">Content</th>
+		      <th scope="col">Status</th>
+		      <th scope="col"></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+	';
 
 	$query = "
 		SELECT *, complaints.id AS cid FROM complaints 
@@ -394,6 +408,7 @@ function get_complaint_per_student($student_id) {
 			</div>
 		';
 	}
+	$i = 1;
 	foreach ($resutl as $row) {
 		$status = "new";
         $status_bg = "warning";
@@ -407,21 +422,20 @@ function get_complaint_per_student($student_id) {
         }
 
 		$output .= '
-			<div class="d-flex text-body-secondary pt-3">
-                <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between">
-                        <strong class="text-gray-dark">'.ucwords($row["category"]) . ' / ' . $row["complaint_id"].'</strong>
-                        <span class="badge bg-'.$status_bg.'">'.$status.'</span>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a>
-                    </div>
-                    <span class="d-block">' . substr($row["complaint_message"], 0, 180) . ' ...</span>
-                </div>
-            </div>
-
+			
+			<tr>
+			    <th scope="row">' . $i . '</th>
+			    <th scope="row">' . $row["complaint_id"].'</th>
+			    <td>'.ucwords($row["category"]).'</td>
+			    <td>'.pretty_date_only($row["complaint_date"]).'</td>
+			    <td>' . substr($row["complaint_message"], 0, 10) . ' ...</td>
+			    <td><span class="badge bg-'.$status_bg.'">'.$status.'</span></td>
+			    <td><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a></td>
+			</tr>
+			   
 			<!-- Modal -->
 			<div class="modal fade" id="complaintModal_'.$row["id"].'" tabindex="-1" aria-labelledby="complaintModalLabel_'.$row["id"].'" aria-hidden="true">
-			  	<div class="modal-dialog">
+			  	<div class="modal-dialog modal-lg">
 			    	<div class="modal-content">
 			      		<div class="modal-header">
 				        	<h1 class="modal-title fs-5" id="complaintModalLabel_'.$row["id"].'">Complaint on '.pretty_date($row["createdAt"]).'</h1>
@@ -435,9 +449,6 @@ function get_complaint_per_student($student_id) {
 				      		Status: <span class="badge bg-'.$status_bg.'">'.$status.'</span>
 				      		<hr>
 				        	' . nl2br($row['complaint_message']) . '
-				        	<br>
-				        	<br>
-				        	<a href="' . PROOT . 'dist/media/uploads/'.$row["complaint_document"].'" target="_blank">view file . ' . $row["complaint_document"] . '</a>
 				      	</div>
 				      	<div class="modal-footer">
 				        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -447,7 +458,12 @@ function get_complaint_per_student($student_id) {
 			  	</div>
 			</div>
 		';
+		$i++;
 	}
+	$output .= '
+		</tbody>
+			</table>
+	';
 	return $output;
 }
 

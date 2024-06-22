@@ -42,49 +42,49 @@ if (isset($_GET['delete']) && !empty($_GET['delete'])) {
 
 
 $complaint_date = ((isset($_POST['complaint_date']) ? sanitize($_POST['complaint_date']) : ''));
-$message = ((isset($_POST['message']) ? sanitize($_POST['message']) : ''));
+$message = ((isset($_POST['message']) ? $_POST['message'] : ''));
 $fileNewName = '';
 if (isset($_POST['submit'])) {
 
-    if (empty($_FILES)) {
-        exit('$_FILES is empty - is file_uploads set to "Off" in php.ini?');
-    } else {
+    // if (empty($_FILES)) {
+    //     exit('$_FILES is empty - is file_uploads set to "Off" in php.ini?');
+    // } else {
 
-        $file = $_FILES['file'];
-        $fileName = $_FILES['file']['name'];
-        $fileTmpName = $_FILES['file']['tmp_name'];
-        $fileSize = $_FILES['file']['size'];
-        $fileError = $_FILES['file']['error'];
-        $fileType = $_FILES['file']['type'];
+    //     $file = $_FILES['file'];
+    //     $fileName = $_FILES['file']['name'];
+    //     $fileTmpName = $_FILES['file']['tmp_name'];
+    //     $fileSize = $_FILES['file']['size'];
+    //     $fileError = $_FILES['file']['error'];
+    //     $fileType = $_FILES['file']['type'];
 
-        $fileExt = explode('.', $fileName);
-        $fileActualExt = strtolower(end($fileExt));
+    //     $fileExt = explode('.', $fileName);
+    //     $fileActualExt = strtolower(end($fileExt));
 
-        $allowed = array('jpg', 'jpeg', 'png', 'pdf');
-        if (in_array($fileActualExt, $allowed)) {
-            // code...
-            if ($fileError === 0) {
-                if ($fileSize < 1000000) {
-                    // code...
-                    $fileNewName = uniqid('', true) . "." . $fileActualExt;
-                    $fileDestination = 'dist/media/uploads/' . $fileNewName;
+    //     $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+    //     if (in_array($fileActualExt, $allowed)) {
+    //         // code...
+    //         if ($fileError === 0) {
+    //             if ($fileSize < 1000000) {
+    //                 // code...
+    //                 $fileNewName = uniqid('', true) . "." . $fileActualExt;
+    //                 $fileDestination = 'dist/media/uploads/' . $fileNewName;
 
-                    move_uploaded_file($fileTmpName, $fileDestination);
+    //                 move_uploaded_file($fileTmpName, $fileDestination);
 
 
-                } else {
-                    echo js_alert("Your file is too big!");
-                    exit('<a href="javascript:history.go(-1)">go back</a>');
-                }
-            } else {
-                echo js_alert("There was an error uploading your file!");
-                exit('<a href="javascript:history.go(-1)">go back</a>');
-            }
-        } else {
-            echo js_alert("You cannot upload files of this type!");
-            exit('<a href="javascript:history.go(-1)">go back</a>');
-        }
-    }
+    //             } else {
+    //                 echo js_alert("Your file is too big!");
+    //                 exit('<a href="javascript:history.go(-1)">go back</a>');
+    //             }
+    //         } else {
+    //             echo js_alert("There was an error uploading your file!");
+    //             exit('<a href="javascript:history.go(-1)">go back</a>');
+    //         }
+    //     } else {
+    //         echo js_alert("You cannot upload files of this type!");
+    //         exit('<a href="javascript:history.go(-1)">go back</a>');
+    //     }
+    // }
 
     $complaint_id = uniqid('', true);
     $createdAt = date("Y-m-d H:i:s");
@@ -315,11 +315,11 @@ if (isset($_POST['submit'])) {
                             <label for="message" class="form-label">Message</label>
                             <textarea class="form-control" id="message" name="message" rows="3" required><?= $message; ?></textarea>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="file" class="form-label">Document (optional)</label>
                             <input type="file" class="form-control" id="file" name="file">
                             <div class="form-text">Upload any document if available for more evidence</div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -338,19 +338,16 @@ if (isset($_POST['submit'])) {
 
     <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
-      // tinymce.init({
-      //   selector: 'textarea',
-      //   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-      //   toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-      // });
-
-      tinymce.init({ 
-        selector: 'textarea',
+      tinymce.init({
+        selector: '#message',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
         setup: function (editor) {
             editor.on('change', function (e) {
                 editor.save();
             });
         }
+      });
     </script>
 </body>
 </html>
