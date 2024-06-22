@@ -6,43 +6,75 @@
         redirect(PROOT . 'board');
     }
 
-    $error = '';
+    $output = '';
+    $student_id = ((isset($_POST['student_id']) && !empty($_POST['student_id'])) ? sanitize($_POST['student_id']) : '');
+    $fullname = ((isset($_POST['fullname']) && !empty($_POST['fullname'])) ? sanitize($_POST['fullname']) : '');
+    $level = ((isset($_POST['level']) && !empty($_POST['level'])) ? sanitize($_POST['level']) : '');
+    $email = ((isset($_POST['email']) && !empty($_POST['email'])) ? sanitize($_POST['email']) : '');
+    $password = sanitize($_POST['user_password']);
 
-    if ($_POST) {
-        if (empty($_POST['student_email']) || empty($_POST['student_password'])) {
-            $error = 'You must provide email and password.';
-        }
-        $query = "
-            SELECT * FROM students 
-            WHERE email = :email 
-            LIMIT 1
-        ";
-        $statement = $conn->prepare($query);
-        $statement->execute(['email' => $_POST['student_email']]);
-        $count_row = $statement->rowCount();
-        $result = $statement->fetchAll();
+    if (isset($_POST['submit_form'])) {
 
-        if ($count_row < 1) {
-            $error = 'Unkown student.';
-        }
+        $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-        foreach ($result as $row) {
-            if (!password_verify($_POST['student_password'], $row['password'])) {
-                $error = 'Unkown student.';
-            }
+        $sql = "SELECT * FROM students WHERE email = :email";
+        $statement = $conn->prepare($sql);
+        $statement->execute([':user_email' => $email]);
 
-            if ($row['trash'] == '1') {
-                $error = 'Your account has been disabled.';
-            }
+        if ($statement->rowCount() > 0) {
+            $output =  '<div class="alert alert-secondary" role="alert">User account already exist.<div>';
+        } else {
+            $vericode = md5(time());
 
-            if (!empty($error)) {
-                $error;
+            $fn = ucwords($fullname);
+            $to = $email;
+            $subject = "Please Verify Your Account.";
+            $body = "
+                <h3>
+                    {$fn},</h3>
+                    <p>
+                        Thank you for registering. Please verify your account by clicking 
+                        <a href=\"https://sites.local/mifo/shop/verified/{$vericode}\" target=\"_blank\">here</a>.
+                </p>
+            ";
+
+            $mail_result = send_email($fn, $to, $subject, $body);
+            if ($mail_result) {
+
+                $data = [
+                    ':user_fullname'        => $fullname,
+                    ':user_email'           => $email,
+                    ':user_password'        => $password_hash
+                ];
+                $query = "
+                    INSERT INTO students (user_fullname, user_email, user_password) 
+                    VALUES (:user_fullname, :user_email, :user_password); 
+                ";
+                $statement = $conn->prepare($query);
+                $result = $statement->execute($data);
+                $user_id = $conn->lastInsertId();
+
+                if (isset($result)) {
+                    $sql = "
+                        UPDATE students 
+                        SET user_vericode = :user_vericode 
+                        WHERE user_id = :user_id
+                    ";
+                    $statement = $conn->prepare($sql);
+                    $sub_result = $statement->execute([
+                        ':user_vericode' => $vericode,
+                        ':user_id' => $user_id
+                    ]);
+                    if ($sub_result) {
+                        // code...
+                        $output = 'ok';
+                    }
+                }
             } else {
-                $stud_id = $row['id'];
-                studentLogin($stud_id);
+                //$output =  "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                $output =  '<div class="alert alert-secondary" role="alert">Message could not be sent, please tyr again</div>';
             }
         }
-        
     }
 
 ?>
@@ -53,7 +85,7 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Student Complaint System</title>
+        <title>Sign up . Student Complaint System</title>
         <link href="dist/css/bootstrap.min.css" rel="stylesheet">
         <meta name="theme-color" content="#712cf9">
 
@@ -205,26 +237,36 @@
             <div class="p-3 text-center bg-body-tertiary rounded-3">
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
+                <?= $output; ?>
                 <form method="POST" class="col-lg-8 mx-auto fs-5 text-muted">
-                    <p >
-                        Log into your account to lodge a complain or check your complain status. 
-                        <br><code class="mb-1"><?= $error; ?></code>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
-                            <label for="student_email">Student Email address</label>
+                    <p class="mb-3">
+                        Create an account. 
+                        <div class="mb-3">
+                            <input class="form-control" type="text" id="student_id" name="student_id" placeholder="Student ID" />
                         </div>
-                        <div class="form-floating">
-                            <input type="password" class="form-control" id="student_password" name="student_password" placeholder="Password">
-                            <label for="student_password">Student Password</label>
+                        <div class="mb-3">
+                            <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Full name" />
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" type="text" id="level" name="level" placeholder="Level" />
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" type="email" id="email" name="email" placeholder="Email" />
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" type="password" id="user_password" name="user_password" placeholder="Password" />
+                        </div>
+                        <div class="mb-0">
+                            <input class="form-control" type="password" id="repeat_password" name="repeat_password" placeholder="Repeat password" />
                         </div>
                     </p>
                     <div class="d-inline-flex gap-2 mb-5">
                         <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="submit" name="submit_form">
-                            Sign in
+                            Setup account
                             <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
                         </button>
                         <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="index">
-                            Go home
+                            Login
                         </a>
                     </div>
                 </form>
