@@ -330,6 +330,7 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 
+    <script src="dist/js/jquery-3.7.1.min.js"></script>
     <script src="dist/js/popper.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
 

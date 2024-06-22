@@ -411,7 +411,7 @@
                     <a href="complaints" class=""><< go back</a>
                     <div class="card">
                         <div class="card-body">
-                            <p>
+                            <p class="mb-3">
                                 Category: <?= ucwords($row_view[0]["category"]); ?>
                                 <br>
                                 Event Date: <?= pretty_date_only($row_view[0]["complaint_date"]); ?>
@@ -421,12 +421,7 @@
                                 Status: <span class="badge bg-<?= $status_bg ?>"><?= $status ?></span>
                                 <br>
                                 <hr>
-                                <?= nl2br($row_view[0]['complaint_message']); ?>
-                                <br>
-                                <br>
-                                <?php if ($row_view[0]['complaint_document'] != ''): ?>
-                                    <a href="<?= PROOT . 'dist/media/uploads/'.$row_view[0]["complaint_document"]; ?>" target="_blank">view file . <?= $row_view[0]["complaint_document"]; ?></a>
-                                <?php endif ?>
+                                <?= $row_view[0]['complaint_message']; ?>
                             </p>
                             <div class="d-inline-flex gap-2 mb-5">
                                 <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?complete=<?= $row_view[0]['cid']; ?>" name="submit_form">
@@ -478,7 +473,7 @@
                                     <h1 class="modal-title fs-5" id="updateModalLabel_<?= $row_view[0]['cid']; ?>">Update Complain</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form method="POST" action="complaints?update=<?= $row_view['cid']; ?>" enctype="multipart/form-data">
+                                <form method="POST" action="complaints?update=<?= $row_view[0]['cid']; ?>" enctype="multipart/form-data">
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="complaint_date" class="form-label">Date</label>
@@ -498,15 +493,15 @@
                                             <label for="message" class="form-label">Message</label>
                                             <textarea class="form-control" id="message" name="message" rows="3" required><?= $row_view[0]['complaint_message']; ?></textarea>
                                         </div>
-                                        <div class="mb-3">
+                                        <!-- <div class="mb-3">
                                             <label for="file" class="form-label">Document (optional)</label>
                                             <input type="file" class="form-control" id="file" name="file">
                                             <div class="form-text">Upload any document if available for more evidence</div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" name="submit" class="btn btn-primary">Send complain</button>
+                                        <button type="submit" name="submit" class="btn btn-primary">Update complain</button>
                                     </div>
                                 </form>
                             </div>
@@ -557,7 +552,7 @@
                                     </a>
                                 </td>
                                 <td><?= ucwords($row['category']); ?></td>
-                                <td><?= substr($row['complaint_message'], 0, 120); ?>...</td>
+                                <td><?= substr($row['complaint_message'], 0, 10); ?>...</td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
                                 <td><?= ucwords($row['fullname']); ?></td>
                                 <td><span class="badge bg-<?= $status_bg ?>"><?= $status ?></td>
@@ -570,7 +565,25 @@
         </div>
     </main>
 
+    <script src="<?= PROOT; ?>dist/js/jquery-3.7.1.min.js"></script>
     <script src="<?= PROOT; ?>dist/js/popper.min.js"></script>
     <script src="<?= PROOT; ?>dist/js/bootstrap.min.js"></script>
+
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/87lq0a69wq228bimapgxuc63s4akao59p3y5jhz37x50zpjk/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+      tinymce.init({
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        setup: function (editor) {
+            editor.on('change', function (e) {
+                editor.save();
+            });
+        }
+      });
+    </script>
 </body>
 </html>
