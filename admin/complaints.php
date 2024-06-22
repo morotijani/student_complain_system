@@ -568,9 +568,10 @@
     <script src="<?= PROOT; ?>dist/js/jquery-3.7.1.min.js"></script>
     <script src="<?= PROOT; ?>dist/js/popper.min.js"></script>
     <script src="<?= PROOT; ?>dist/js/bootstrap.min.js"></script>
+    <script src="<?= PROOT; ?>dist/js/tinymce.min.js"></script>
 
     <!-- Place the first <script> tag in your HTML's <head> -->
-    <script src="https://cdn.tiny.cloud/1/87lq0a69wq228bimapgxuc63s4akao59p3y5jhz37x50zpjk/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- <script src="https://cdn.tiny.cloud/1/87lq0a69wq228bimapgxuc63s4akao59p3y5jhz37x50zpjk/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script> -->
 
     <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
