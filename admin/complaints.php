@@ -20,13 +20,13 @@
 
     $category_value = isset($_POST['category']) ? sanitize($_POST['category']) : '';
 
-    // Edit Brand
-    if (isset($_GET['edit']) && !empty($_GET['edit'])) {
+    // Edit Complaint
+    if (isset($_GET['update']) && !empty($_GET['update'])) {
         // code...
-        $edit_id = sanitize((int)$_GET['edit']);
+        $edit_id = sanitize((int)$_GET['update']);
 
         $query = "
-            SELECT * FROM categories 
+            SELECT * FROM complaints 
             WHERE id = ? 
             LIMIT 1
         ";
@@ -36,9 +36,25 @@
         $count = $statement->rowCount();
         if ($count > 0) {
             $category_value = $row[0]['category'];
+            $updateSql = "
+                UPDATE complaints 
+                SET category_id = ?, complaint_message = ?, complaint_date = ? 
+                WHERE id = ?
+            ";
+            $statement = $conn->prepare($updateSql);
+            $result = $statement->execute([$_POST['complaint_category'], $_POST['message'], $_POST['complaint_date'], $edit_id]);
+
+            if ($result) {
+                // code...
+                $_SESSION['flash_success'] = 'Complaint updated successfully!';
+                redirect(PROOT . 'admin/complaints?view=' . $edit_id . '');
+            } else {
+                $_SESSION['flash_error'] = 'Complaint update error, please try again!';
+                redirect(PROOT . 'admin/complaints?view=' . $edit_id . '');
+            }
         } else {
-            $_SESSION['flash_error'] = 'Unknow brand!';
-            redirect(PROOT . 'admin/categories');
+            $_SESSION['flash_error'] = 'Cannot find complaint!';
+            redirect(PROOT . 'admin/complaints');
         }
     }
 
@@ -421,10 +437,12 @@
                                     Delete complaint
                                 </a>
                             </div>
+                            <br>
+                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#updateModal_<?= $row_view[0]['cid']; ?>">Update conplaint</a>
                         </div>
                     </div>
 
-                    <!-- Modal -->
+                    <!-- Student Details Modal -->
                     <div class="modal fade" id="studentModal_<?= $row_view[0]['student_id']; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="studentModalLabel_<?= $row_view[0]['student_id']; ?>" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
@@ -448,6 +466,49 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Update Modal -->
+                    <div class="modal fade" id="updateModal_<?= $row_view[0]['cid']; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModalLabel_<?= $row_view[0]['cid']; ?>" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="updateModalLabel_<?= $row_view[0]['cid']; ?>">Update Complain</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="POST" action="complaints?update=<?= $row_view['cid']; ?>" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="complaint_date" class="form-label">Date</label>
+                                            <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="" value="<?= $row_view[0]['complaint_date']; ?>" required>
+                                            <div class="form-text">date of the event happening</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="complaint_date" class="form-label">Category</label>
+                                            <select type="text" class="form-control" id="complaint_category" name="complaint_category" required>
+                                                <option value="<?= $row_view[0]["category_id"]; ?>" selected>
+                                                    <?= ucwords($row_view[0]["category"]); ?>
+                                                </option>
+                                                <?= get_categories(); ?>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="message" class="form-label">Message</label>
+                                            <textarea class="form-control" id="message" name="message" rows="3" required><?= $row_view[0]['complaint_message']; ?></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="file" class="form-label">Document (optional)</label>
+                                            <input type="file" class="form-control" id="file" name="file">
+                                            <div class="form-text">Upload any document if available for more evidence</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" name="submit" class="btn btn-primary">Send complain</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

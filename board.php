@@ -291,7 +291,7 @@ if (isset($_POST['submit'])) {
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Make a Complain</h1>
@@ -299,27 +299,27 @@ if (isset($_POST['submit'])) {
                 </div>
                 <form method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="complaint_date" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="" value="<?= $complaint_date; ?>" required>
-                                <div class="form-text">date of the event happening</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="complaint_date" class="form-label">Category</label>
-                                <select type="text" class="form-control" id="complaint_category" name="complaint_category" required>
-                                    <option value=""></option>
-                                    <?= get_categories(); ?>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Message</label>
-                                <textarea class="form-control" id="message" name="message" rows="3" required><?= $message; ?></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Document (optional)</label>
-                                <input type="file" class="form-control" id="file" name="file">
-                                <div class="form-text">Upload any document if available for more evidence</div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="complaint_date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="complaint_date" name="complaint_date" placeholder="" value="<?= $complaint_date; ?>" required>
+                            <div class="form-text">date of the event happening</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="complaint_date" class="form-label">Category</label>
+                            <select type="text" class="form-control" id="complaint_category" name="complaint_category" required>
+                                <option value=""></option>
+                                <?= get_categories(); ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="3" required><?= $message; ?></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Document (optional)</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                            <div class="form-text">Upload any document if available for more evidence</div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -332,5 +332,25 @@ if (isset($_POST['submit'])) {
 
     <script src="dist/js/popper.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
+
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/87lq0a69wq228bimapgxuc63s4akao59p3y5jhz37x50zpjk/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+      // tinymce.init({
+      //   selector: 'textarea',
+      //   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+      //   toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      // });
+
+      tinymce.init({ 
+        selector: 'textarea',
+        setup: function (editor) {
+            editor.on('change', function (e) {
+                editor.save();
+            });
+        }
+    </script>
 </body>
 </html>
