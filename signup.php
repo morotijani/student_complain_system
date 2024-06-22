@@ -12,6 +12,7 @@
     $level = ((isset($_POST['level']) && !empty($_POST['level'])) ? sanitize($_POST['level']) : '');
     $email = ((isset($_POST['email']) && !empty($_POST['email'])) ? sanitize($_POST['email']) : '');
     $password = sanitize($_POST['user_password']);
+    $createdAt = date('Y-m-d H:i:s A');
 
     if (isset($_POST['submit_form'])) {
 
@@ -19,65 +20,29 @@
 
         $sql = "SELECT * FROM students WHERE email = :email";
         $statement = $conn->prepare($sql);
-        $statement->execute([':user_email' => $email]);
+        $statement->execute([':email' => $email]);
 
         if ($statement->rowCount() > 0) {
             $output =  '<div class="alert alert-secondary" role="alert">User account already exist.<div>';
         } else {
-            $vericode = md5(time());
-
-            $fn = ucwords($fullname);
-            $to = $email;
-            $subject = "Please Verify Your Account.";
-            $body = "
-                <h3>
-                    {$fn},</h3>
-                    <p>
-                        Thank you for registering. Please verify your account by clicking 
-                        <a href=\"https://sites.local/mifo/shop/verified/{$vericode}\" target=\"_blank\">here</a>.
-                </p>
+            $data = [$student_id, $fullname, $email, $level, $password_hash, $createdAt];
+            $query = "
+                INSERT INTO students (student_id, fullname, email, level, password, createdAt) 
+                VALUES (?, ?, ?, ?, ?, ?); 
             ";
+            $statement = $conn->prepare($query);
+            $result = $statement->execute($data);
+            $user_id = $conn->lastInsertId();
 
-            $mail_result = send_email($fn, $to, $subject, $body);
-            if ($mail_result) {
-
-                $data = [
-                    ':user_fullname'        => $fullname,
-                    ':user_email'           => $email,
-                    ':user_password'        => $password_hash
-                ];
-                $query = "
-                    INSERT INTO students (user_fullname, user_email, user_password) 
-                    VALUES (:user_fullname, :user_email, :user_password); 
-                ";
-                $statement = $conn->prepare($query);
-                $result = $statement->execute($data);
-                $user_id = $conn->lastInsertId();
-
-                if (isset($result)) {
-                    $sql = "
-                        UPDATE students 
-                        SET user_vericode = :user_vericode 
-                        WHERE user_id = :user_id
-                    ";
-                    $statement = $conn->prepare($sql);
-                    $sub_result = $statement->execute([
-                        ':user_vericode' => $vericode,
-                        ':user_id' => $user_id
-                    ]);
-                    if ($sub_result) {
-                        // code...
-                        $output = 'ok';
-                    }
-                }
-            } else {
-                //$output =  "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                $output =  '<div class="alert alert-secondary" role="alert">Message could not be sent, please tyr again</div>';
+            if (isset($result)) {
+                $_SESSION['flash_success'] = 'Account successfully setup, go ahead and login';
+                redirect(PROOT . 'login');
             }
         }
     }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
     <head>
