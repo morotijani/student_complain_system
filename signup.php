@@ -19,13 +19,14 @@
         $createdAt = date('Y-m-d H:i:s A');
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "SELECT * FROM students WHERE email = :email";
-        $statement = $conn->prepare($sql);
-        $statement->execute([':email' => $email]);
-
-        if ($statement->rowCount() > 0) {
-            $output =  '<div class="alert alert-secondary" role="alert">User account already exist.<div>';
+        $email_q = $conn->query("SELECT * FROM students WHERE email = '" . $email . "'")->rowCount();
+        if ($email_q > 0) {
+            $output =  'Student email already in use!';
         } else {
+            $id_q = $conn->query("SELECT * FROM students WHERE student_id = '" . $student_id . "'")->rowCount();
+            if ($id_q > 0) {
+                $output =  'Student ID already in use';
+            }
 
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 // code...
@@ -221,21 +222,21 @@
             <div class="p-3 text-center bg-body-tertiary rounded-3">
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
-                <?= $output; ?>
                 <form method="POST" class="col-lg-8 mx-auto fs-5 text-muted">
                     <p class="mb-3">
                         Create an account. 
+                        <p class="text-danger"><?= $output; ?></p>
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="student_id" name="student_id" placeholder="Student ID" required />
+                            <input class="form-control" type="text" id="student_id" name="student_id" placeholder="Student ID" value="<?= $student_id; ?>" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Full name" required />
+                            <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Full name" value="<?= $fullname; ?>" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="text" id="level" name="level" placeholder="Level" required />
+                            <input class="form-control" type="text" id="level" name="level" placeholder="Level" value="<?= $level; ?>" required />
                         </div>
                         <div class="mb-3">
-                            <input class="form-control" type="email" id="email" name="email" placeholder="Email" required />
+                            <input class="form-control" type="email" id="email" name="email" placeholder="Email" value="<?= $email; ?>" required />
                         </div>
                         <div class="mb-3">
                             <input class="form-control" type="password" id="user_password" name="user_password" placeholder="Password" required />
