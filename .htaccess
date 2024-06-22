@@ -1,20 +1,5 @@
 RewriteEngine on
 
-RewriteRule ^shop/products/([a-zA-Z0-9-/]+)$ shop/products.php?pid=$1 [NC,L]
-RewriteRule ^shop/products/([a-zA-Z-0-9-]+)/ shop/products.php?pid=$1 [NC,L]
-
-RewriteRule ^shop/category/([a-zA-Z0-9-/]+)$ shop/category.php?cid=$1 [NC,L]
-RewriteRule ^shop/category/([a-zA-Z-0-9-]+)/ shop/category.php?cid=$1 [NC,L]
-
-RewriteRule ^collection/([a-zA-Z0-9-/]+)$ collection.php?brand=$1 [NC,L]
-RewriteRule ^collection/([a-zA-Z-0-9-]+)/ collection.php?brand=$1 [NC,L]
-
-RewriteRule ^shop/account-address/([0-9a-zA-Z]+)$ shop/account-address.php?edit=$1 [NC,L]
-
-RewriteRule ^shop/verified/([0-9a-zA-Z]+)$ shop/verified.php?vericode=$1 [NC,L]
-
-RewriteRule ^shop/tracker/([0-9a-zA-Z]+)$ shop/tracker.php?code=$1 [NC,L]
-
 RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteCond %{REQUEST_FILENAME}\.php -f
@@ -25,4 +10,4 @@ RewriteCond $1 !^(media|admin|shop|helpers|fonts|dist|controller|connection|robo
 
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
-#ErrorDocument 404 http://127.0.0.1/mifo/404.php
+#ErrorDocument 404 http://127.0.0.1/student_complaint_system/404.html

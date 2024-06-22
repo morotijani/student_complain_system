@@ -173,7 +173,7 @@ require_once ("db_connection/conn.php");
             </nav>
         </div>
 
-        <div class="container my-2">
+        <div class="container my-4">
             <div class="p-5 text-center bg-body-tertiary rounded-3">
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
