@@ -313,7 +313,7 @@
                                 <td><?= ucwords($row['fullname']); ?></td>
                                 <td><?= $row['level']; ?></td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
-                                <td><?= pretty_date($row['updatedAt']); ?></td>
+                                <td><?= ($row['updatedAt'] == NULL) ? '<i>Never logged in</i>': pretty_date($row['updatedAt']); ?></td>
                                 <td>
                                     <a href="<?= PROOT; ?>admin/students?disable=<?= $row['id']; ?>&status=<?= (($row["trash"] == 0) ? 1 : 2); ?>" class="btn btn-sm btn-<?= (($row["trash"] == 0) ? 'danger' : 'primary'); ?>"><?= (($row["trash"] == 0) ? 'Disable' : 'Enable'); ?> student</a>
                                 </td>
