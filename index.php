@@ -186,7 +186,7 @@ require_once ("db_connection/conn.php");
                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
                 </a>
                 <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
-                    Complaint status
+                    Sign in
                 </button>
             </div>
         </div>
