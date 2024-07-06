@@ -575,16 +575,23 @@
 
     <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
-      tinymce.init({
-        selector: 'textarea',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        setup: function (editor) {
-            editor.on('change', function (e) {
-                editor.save();
-            });
-        }
-      });
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            setup: function (editor) {
+                editor.on('change', function (e) {
+                    editor.save();
+                });
+            },
+            images_upload_url: '<?= PROOT; ?>postAcceptor.php'
+        });
+
+        // tinymce.activeEditor.uploadImages().then(() => {
+        //     $.post('<?= PROOT ;?>postAcceptor.php', tinymce.activeEditor.getContent()).done(() => {
+        //         console.log("Uploaded images and posted content as an ajax request.");
+        //     });
+        // });
     </script>
 </body>
 </html>
