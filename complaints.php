@@ -1,6 +1,6 @@
 <?php 
 
-    require_once ("../db_connection/conn.php");
+    require_once ("db_connection/conn.php");
 
     if (!admin_is_logged_in()) {
         admn_login_redirect();
@@ -47,14 +47,14 @@
             if ($result) {
                 // code...
                 $_SESSION['flash_success'] = 'Complaint updated successfully!';
-                redirect(PROOT . 'admin/complaints?view=' . $edit_id . '');
+                redirect(PROOT . 'complaints?view=' . $edit_id . '');
             } else {
                 $_SESSION['flash_error'] = 'Complaint update error, please try again!';
-                redirect(PROOT . 'admin/complaints?view=' . $edit_id . '');
+                redirect(PROOT . 'complaints?view=' . $edit_id . '');
             }
         } else {
             $_SESSION['flash_error'] = 'Cannot find complaint!';
-            redirect(PROOT . 'admin/complaints');
+            redirect(PROOT . 'complaints');
         }
     }
 
@@ -82,13 +82,13 @@
             if ($sub_result) {
 
                 $_SESSION['flash_success'] = 'Complaint deleted successfully!';
-                redirect(PROOT . 'admin/complaints');
+                redirect(PROOT . 'complaints');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
         } else {
             $_SESSION['flash_error'] = 'Can not delete complaint!';
-            redirect(PROOT . 'admin/complaints');
+            redirect(PROOT . 'complaints');
         }
     }
 
@@ -117,13 +117,13 @@
             if ($sub_result) {
 
                 $_SESSION['flash_success'] = 'Complaint completed successfully!';
-                redirect(PROOT . 'admin/complaints');
+                redirect(PROOT . 'complaints');
             } else {
                 echo js_alert('Something went wrong, please try again.');
             }
         } else {
             $_SESSION['flash_error'] = 'Can not complete complaint!';
-            redirect(PROOT . 'admin/complaints');
+            redirect(PROOT . 'complaints');
         }
     }
 
@@ -424,11 +424,11 @@
                                 <?= $row_view[0]['complaint_message']; ?>
                             </p>
                             <div class="d-inline-flex gap-2 mb-5">
-                                <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?complete=<?= $row_view[0]['cid']; ?>" name="submit_form">
+                                <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>complaints?complete=<?= $row_view[0]['cid']; ?>" name="submit_form">
                                     Complete complaint
                                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
                                 </a>
-                                <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>admin/complaints?delete=<?= $row_view[0]['cid']; ?>">
+                                <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>complaints?delete=<?= $row_view[0]['cid']; ?>">
                                     Delete complaint
                                 </a>
                             </div>
@@ -586,12 +586,6 @@
             },
             images_upload_url: '<?= PROOT; ?>postAcceptor.php'
         });
-
-        // tinymce.activeEditor.uploadImages().then(() => {
-        //     $.post('<?= PROOT ;?>postAcceptor.php', tinymce.activeEditor.getContent()).done(() => {
-        //         console.log("Uploaded images and posted content as an ajax request.");
-        //     });
-        // });
     </script>
 </body>
 </html>

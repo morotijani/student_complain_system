@@ -340,16 +340,18 @@ if (isset($_POST['submit'])) {
 
     <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
-      tinymce.init({
-        selector: '#message',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        setup: function (editor) {
-            editor.on('change', function (e) {
-                editor.save();
-            });
-        }
-      });
+        tinymce.init({
+            selector: '#message',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            setup: function (editor) {
+                editor.on('change', function (e) {
+                    editor.save();
+                });
+            },
+            images_upload_url: '<?= PROOT; ?>postAcceptor.php',
+            //images_upload_base_path: '/dist/media/complaint_media'
+        });
     </script>
 </body>
 </html>
