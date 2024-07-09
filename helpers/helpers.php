@@ -401,6 +401,63 @@ function get_complaint_per_student($student_id) {
 	$resutl = $statement->fetchAll();
 	if ($statement->rowCount() > 0) {
 		// code...
+		
+		$i = 1;
+		foreach ($resutl as $row) {
+			$status = "new";
+	        $status_bg = "warning";
+	        if ($row['complaint_status'] == 1) {
+	            // code...
+	            $status = "processing";
+	            $status_bg = "info";
+	        } else if ($row['complaint_status'] == 2) {
+	            $status = "Done";
+	            $status_bg = "success";
+	        }
+
+			$output .= '
+				
+				<tr>
+				    <th scope="row">' . $i . '</th>
+				    <th scope="row">' . $row["complaint_id"].'</th>
+				    <td>'.ucwords($row["category"]).'</td>
+				    <td>'.pretty_date_only($row["complaint_date"]).'</td>
+				    <td>' . substr($row["complaint_message"], 0, 10) . ' ...</td>
+				    <td><span class="badge bg-'.$status_bg.'">'.$status.'</span></td>
+				    <td><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["cid"].'">view</a></td>
+				</tr>
+				   
+				<!-- Modal -->
+				<div class="modal fade" id="complaintModal_'.$row["cid"].'" tabindex="-1" aria-labelledby="complaintModalLabel_'.$row["cid"].'" aria-hidden="true">
+				  	<div class="modal-dialog modal-lg">
+				    	<div class="modal-content">
+				      		<div class="modal-header">
+					        	<h1 class="modal-title fs-5" id="complaintModalLabel_'.$row["cid"].'">Complaint on '.pretty_date($row["createdAt"]).'</h1>
+					        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					      	</div>
+					      	<div class="modal-body">
+					      		Category: '.ucwords($row["category"]).'
+					      		<br>
+					      		Event Date: '.pretty_date_only($row["complaint_date"]).'
+					      		<br>
+					      		Status: <span class="badge bg-'.$status_bg.'">'.$status.'</span>
+					      		<hr>
+					        	' . nl2br($row['complaint_message']) . '
+					      	</div>
+					      	<div class="modal-footer">
+					        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					        	<a href="' . PROOT . 'board?delete=' . $row["cid"] . '" class="btn btn-danger">Delete</a>
+					      	</div>
+					    </div>
+				  	</div>
+				</div>
+			';
+			$i++;
+		}
+		$output .= '
+			</tbody>
+				</table>
+		';
 	} else {
 		$output = '
 			<div class="alert alert-primary" role="alert">
@@ -408,62 +465,6 @@ function get_complaint_per_student($student_id) {
 			</div>
 		';
 	}
-	$i = 1;
-	foreach ($resutl as $row) {
-		$status = "new";
-        $status_bg = "warning";
-        if ($row['complaint_status'] == 1) {
-            // code...
-            $status = "processing";
-            $status_bg = "info";
-        } else if ($row['complaint_status'] == 2) {
-            $status = "Done";
-            $status_bg = "success";
-        }
-
-		$output .= '
-			
-			<tr>
-			    <th scope="row">' . $i . '</th>
-			    <th scope="row">' . $row["complaint_id"].'</th>
-			    <td>'.ucwords($row["category"]).'</td>
-			    <td>'.pretty_date_only($row["complaint_date"]).'</td>
-			    <td>' . substr($row["complaint_message"], 0, 10) . ' ...</td>
-			    <td><span class="badge bg-'.$status_bg.'">'.$status.'</span></td>
-			    <td><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["id"].'">view</a></td>
-			</tr>
-			   
-			<!-- Modal -->
-			<div class="modal fade" id="complaintModal_'.$row["id"].'" tabindex="-1" aria-labelledby="complaintModalLabel_'.$row["id"].'" aria-hidden="true">
-			  	<div class="modal-dialog modal-lg">
-			    	<div class="modal-content">
-			      		<div class="modal-header">
-				        	<h1 class="modal-title fs-5" id="complaintModalLabel_'.$row["id"].'">Complaint on '.pretty_date($row["createdAt"]).'</h1>
-				        	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				      	</div>
-				      	<div class="modal-body">
-				      		Category: '.ucwords($row["category"]).'
-				      		<br>
-				      		Event Date: '.pretty_date_only($row["complaint_date"]).'
-				      		<br>
-				      		Status: <span class="badge bg-'.$status_bg.'">'.$status.'</span>
-				      		<hr>
-				        	' . nl2br($row['complaint_message']) . '
-				      	</div>
-				      	<div class="modal-footer">
-				        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				        	<a href="' . PROOT . 'board?delete=' . $row["cid"] . '" class="btn btn-danger">Delete</a>
-				      	</div>
-				    </div>
-			  	</div>
-			</div>
-		';
-		$i++;
-	}
-	$output .= '
-		</tbody>
-			</table>
-	';
 	return $output;
 }
 
