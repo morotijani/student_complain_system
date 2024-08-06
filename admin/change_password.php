@@ -270,15 +270,15 @@
                                 <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
                             </a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="index">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="categories">Categories</a></li>
-                        <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
-                        <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
-                        <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/index">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/categories">Categories</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>complaints">Complaints</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/students">Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/settings">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">
+                            <a class="nav-link" href="<?= PROOT; ?>admin/logout">
                                 Logout
                             </a>
                         </li>

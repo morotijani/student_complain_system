@@ -178,7 +178,11 @@ require_once ("db_connection/conn.php");
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">Student complaint system</h1>
                 <p class="col-lg-8 mx-auto fs-5 text-muted">
-                    This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
+                    <h3>Welcome to the Student Online Complaint System</h3>
+                    <br>
+                    Ensuring Your Voice is Heard
+                    At our institution, we are committed to providing a supportive and responsive environment. The Student Online Complaint System is here to ensure your concerns and issues are addressed promptly and effectively.
+
                 </p>
                 <div class="d-inline-flex gap-2 mb-5">
                 <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="board">

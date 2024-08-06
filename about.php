@@ -178,22 +178,32 @@ require_once ("db_connection/conn.php");
                 <img src="dist/media/logo.png" class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
                 <h1 class="text-body-emphasis">About us</h1>
                 <p class="col-lg-8 mx-auto fs-5 text-muted">
-                    This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    The Student Online Complaint System is designed to provide a streamlined and accessible platform for students to voice their concerns and issues. Recognizing the importance of addressing student grievances promptly and effectively, this system ensures that all complaints are received, documented, and processed with transparency and efficiency.
+
+                    Key Features:
+User-Friendly Interface: The platform is easy to navigate, allowing students to submit complaints quickly and effortlessly.
+<br><br>
+Confidentiality: Students can submit their complaints anonymously, ensuring their privacy and encouraging open communication.
+<br><br>
+Tracking and Updates: Students can track the status of their complaints in real-time and receive updates as their issues are addressed.
+<br><br>
+Comprehensive Categories: Complaints can be submitted under various categories, including academic issues, campus facilities, administrative problems, and more.
+<br><br>
+Efficient Resolution: The system is designed to route complaints to the appropriate departments for swift resolution, minimizing delays.
+<br><br>
+The Student Online Complaint System is committed to fostering a responsive and supportive educational environment by ensuring that every student's voice is heard and their concerns are addressed.
+
+
+
                 </p>
                 <div class="d-inline-flex gap-2 mb-5">
                 <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" href="board">
                     Make a complaint
                     <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
                 </a>
-                <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
+                <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="<?= PROOT; ?>index">
                     Go home
-                </button>
+                </a>
             </div>
         </div>
     </div>

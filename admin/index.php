@@ -219,15 +219,15 @@
                                 <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
                             </a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="index">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="categories">Categories</a></li>
-                        <li class="nav-item"><a class="nav-link" href="complaints">Complaints</a></li>
-                        <li class="nav-item"><a class="nav-link" href="students">Students</a></li>
-                        <li class="nav-item"><a class="nav-link" href="settings">Settings</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile">Hello <?= $admin_data['first']; ?>!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/index">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/categories">Categories</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>complaints">Complaints</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/students">Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/settings">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">
+                            <a class="nav-link" href="<?= PROOT; ?>admin/logout">
                                 Logout
                             </a>
                         </li>
@@ -243,7 +243,7 @@
                 <h1 class="display-3 fw-bold">there is <?= count_complaints(); ?> compliants</h1>
                 <h3 class="fw-normal text-muted mb-3">from the database so far</h3>
                 <div class="d-flex gap-3 justify-content-center lead fw-normal">
-                    <a class="icon-link" href="complaints">
+                    <a class="icon-link" href="<?= PROOT; ?>complaints">
                         Complaints
                         <svg class="bi"><use xlink:href="#chevron-right"/></svg>
                     </a>
