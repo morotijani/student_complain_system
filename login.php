@@ -27,12 +27,12 @@
         $result = $statement->fetchAll();
 
         if ($count_row < 1) {
-            $error = 'Unkown student.';
+            $error = 'Invalid login details provided!';
         }
 
         foreach ($result as $row) {
             if (!password_verify($_POST['student_password'], $row['password'])) {
-                $error = 'Unkown student.';
+                $error = 'Invalid login details provided!';
             }
 
             if ($row['trash'] == '1') {
@@ -43,7 +43,7 @@
                 $error;
             } else {
                 if ($row['status'] == 'admin') {
-                    $admin_id = $row['id'];
+                    $admin_id = $row['student_id'];
                     adminLogin($admin_id);
                 } else {
                     $stud_id = $row['id'];

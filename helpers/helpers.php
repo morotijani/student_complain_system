@@ -318,12 +318,12 @@ function adminLogin($admin_id) {
 	global $conn;
 	$data = array(
 		':admin_last_login' => date("Y-m-d H:i:s"),
-		':admin_id' => (int)$admin_id
+		':admin_id' => $admin_id
 	);
 	$query = "
-		UPDATE admin 
-		SET admin_last_login = :admin_last_login 
-		WHERE admin_id = :admin_id";
+		UPDATE students 
+		SET createdAt = :admin_last_login 
+		WHERE updatedAt = :admin_id";
 	$statement = $conn->prepare($query);
 	$result = $statement->execute($data);
 	if (isset($result)) {
