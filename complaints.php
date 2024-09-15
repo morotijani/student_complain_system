@@ -38,11 +38,11 @@
             $category_value = $row[0]['category'];
             $updateSql = "
                 UPDATE complaints 
-                SET category_id = ?, complaint_message = ?, complaint_date = ? 
+                SET category_id = ?, complaint_message = ?, complaint_date = ?, admin_comment = ? 
                 WHERE id = ?
             ";
             $statement = $conn->prepare($updateSql);
-            $result = $statement->execute([$_POST['complaint_category'], $_POST['message'], $_POST['complaint_date'], $edit_id]);
+            $result = $statement->execute([$_POST['complaint_category'], $_POST['message'], $_POST['complaint_date'], $_POST['a_comment'], $edit_id]);
 
             if ($result) {
                 // code...
@@ -436,7 +436,7 @@
                                 </a>
                             </div>
                             <br>
-                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#updateModal_<?= $row_view[0]['cid']; ?>">Update conplaint</a>
+                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#updateModal_<?= $row_view[0]['cid']; ?>">Update complaint</a>
                         </div>
                     </div>
 
@@ -496,11 +496,10 @@
                                             <label for="message" class="form-label">Message</label>
                                             <textarea class="form-control" id="message" name="message" rows="3" required><?= $row_view[0]['complaint_message']; ?></textarea>
                                         </div>
-                                        <!-- <div class="mb-3">
-                                            <label for="file" class="form-label">Document (optional)</label>
-                                            <input type="file" class="form-control" id="file" name="file">
-                                            <div class="form-text">Upload any document if available for more evidence</div>
-                                        </div> -->
+                                        <div class="mb-3">
+                                            <label for="a_comment" class="form-label">Comment (optional)</label>
+                                            <input type="text" class="form-control" id="a_comment" name="a_comment" value="<?= $row_view[0]['admin_comment']; ?>">
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
