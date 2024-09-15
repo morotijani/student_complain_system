@@ -6,6 +6,10 @@
         redirect(PROOT . 'board');
     }
 
+    if (student_is_logged_in()) {
+        redirect(PROOT . 'admin/index');
+    }
+
     $error = '';
 
     if ($_POST) {
@@ -38,8 +42,13 @@
             if (!empty($error)) {
                 $error;
             } else {
-                $stud_id = $row['id'];
-                studentLogin($stud_id);
+                if ($row['status'] == 'admin') {
+                    $admin_id = $row['id'];
+                    adminLogin($admin_id);
+                } else {
+                    $stud_id = $row['id'];
+                    studentLogin($stud_id);
+                }
             }
         }
         
@@ -211,11 +220,11 @@
                         <br><code class="mb-1"><?= $error; ?></code>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="student_email" name="student_email" placeholder="name@example.com">
-                            <label for="student_email">Student Email address</label>
+                            <label for="student_email">Enter email address</label>
                         </div>
                         <div class="form-floating">
                             <input type="password" class="form-control" id="student_password" name="student_password" placeholder="Password">
-                            <label for="student_password">Student Password</label>
+                            <label for="student_password">Enter password</label>
                         </div>
                     </p>
                     <div class="d-inline-flex gap-2 mb-5">

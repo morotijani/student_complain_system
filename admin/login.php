@@ -2,6 +2,8 @@
 
     require_once ("../db_connection/conn.php");
 
+    redirect(PROOT . 'login');
+
     $error = '';
 
     if ($_POST) {
