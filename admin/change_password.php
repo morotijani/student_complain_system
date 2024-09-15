@@ -7,7 +7,7 @@
     }
 
     $errors = '';
-    $hashed = $admin_data['admin_password'];
+    $hashed = $admin_data['password'];
     $old_password = ((isset($_POST['old_password']))?sanitize($_POST['old_password']):'');
     $old_password = trim($old_password);
     $password = ((isset($_POST['password']))?sanitize($_POST['password']):'');
@@ -15,7 +15,7 @@
     $confirm = ((isset($_POST['confirm']))?sanitize($_POST['confirm']):'');
     $confirm = trim($confirm);
     $new_hashed = password_hash($password, PASSWORD_BCRYPT);
-    $admin_id = $admin_data['admin_id'];
+    $admin_id = $admin_data['student_id'];
 
     if ($_POST) {
         if (empty($_POST['old_password']) || empty($_POST['password']) || empty($_POST['confirm'])) {
@@ -39,9 +39,9 @@
             $errors;
         } else {
             $query = '
-                UPDATE admin 
-                SET admin_password = :admin_password 
-                WHERE admin_id = :admin_id
+                UPDATE students 
+                SET password = :admin_password 
+                WHERE student_id = :admin_id
             ';
             $satement = $conn->prepare($query);
             $result = $satement->execute(

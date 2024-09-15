@@ -527,51 +527,6 @@ function count_complaints() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// GET ALL ADMINS
-function get_all_admins() {
-	global $conn;
-	global $admin_data;
-	$output = '';
-
-	$query = "
-		SELECT * FROM mifo_admin 
-		WHERE admin_trash = :admin_trash
-	";
-	$statement = $conn->prepare($query);
-	$statement->execute([':admin_trash' => 0]);
-	$result = $statement->fetchAll();
-
-	foreach ($result as $row) {
-		$admin_last_login = $row["admin_last_login"];
-		if ($admin_last_login == NULL) {
-			$admin_last_login = '<span class="text-secondary">Never</span>';
-		} else {
-			$admin_last_login = pretty_date($admin_last_login);
-		}
-		$output .= '
-			<tr>
-				<td>
-		';
-					
-		if ($row['admin_id'] != $admin_data['admin_id']) {
-			$output .= '
-				<a href="'.PROOT.'admin/admins?delete='.$row["admin_id"].'" class="btn btn-sm btn-light"><span data-feather="trash-2"></span></a>
-			';
-		}
-
-		$output .= '
-				</td>
-				<td>'.ucwords($row["admin_fullname"]).'</td>
-				<td>'.$row["admin_email"].'</td>
-				<td>'.pretty_date($row["admin_joined_date"]).'</td>
-				<td>'.$admin_last_login.'</td>
-				<td>'.$row["admin_permissions"].'</td>
-			</tr>
-		';
-	}
-	return $output;
-}
-
 // GET ADMIN PROFILE DETAILS
 function get_admin_profile() {
 	global $conn;
@@ -579,14 +534,14 @@ function get_admin_profile() {
 	$output = '';
 
 	$query = "
-		SELECT * FROM admin 
-		WHERE admin_id = :admin_id 
-		AND admin_trash = :admin_trash 
+		SELECT * FROM students 
+		WHERE student_id = :admin_id 
+		AND trash = :admin_trash 
 		LIMIT 1
 	";
 	$statement = $conn->prepare($query);
 	$statement->execute([
-		':admin_id' => $admin_data['admin_id'],
+		':admin_id' => $admin_data['student_id'],
 		':admin_trash' => 0,
 	]);
 	$result = $statement->fetchAll();
@@ -594,16 +549,16 @@ function get_admin_profile() {
 	foreach ($result as $row) {
 		$output = '
 			<h3>Name</h3>
-		    <p class="lead">'.ucwords($row["admin_fullname"]).'</p>
+		    <p class="lead">'.ucwords($row["fullname"]).'</p>
 		    <br>
 		    <h3>Email</h3>
-		    <p class="lead">'.$row["admin_email"].'</p>
+		    <p class="lead">'.$row["email"].'</p>
 		    <br>
 		    <h3>Joined Date</h3>
-		    <p class="lead">'.pretty_date($row["admin_joined_date"]).'</p>
+		    <p class="lead">'.pretty_date($row["createdAt"]).'</p>
 		    <br>
 		    <h3>Last Login</h3>
-		    <p class="lead">'.pretty_date($row["admin_last_login"]).'</p>
+		    <p class="lead">'.pretty_date($row["updatedAt"]).'</p>
 		';
 	}
 	return $output;

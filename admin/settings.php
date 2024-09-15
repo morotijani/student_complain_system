@@ -10,8 +10,8 @@
 
 
     $errors = '';
-    $admin_fullname = ((isset($_POST['admin_fullname']))?sanitize($_POST['admin_fullname']):$admin_data['admin_fullname']);
-    $admin_email = ((isset($_POST['admin_email']))?sanitize($_POST['admin_email']):$admin_data['admin_email']);
+    $admin_fullname = ((isset($_POST['admin_fullname']))?sanitize($_POST['admin_fullname']):$admin_data['fullname']);
+    $admin_email = ((isset($_POST['admin_email']))?sanitize($_POST['admin_email']):$admin_data['email']);
 
     if ($_POST) {
         if (empty($_POST['admin_email']) && empty($_POST['admin_email'])) {
@@ -28,12 +28,12 @@
             $data = [
                 ':admin_fullname' => $admin_fullname,
                 ':admin_email' => $admin_email,
-                ':admin_id' => $admin_data['admin_id']
+                ':admin_id' => $admin_data['student_id']
             ];
             $query = "
-                UPDATE admin 
-                SET admin_fullname = :admin_fullname, admin_email = :admin_email 
-                WHERE admin_id = :admin_id
+                UPDATE students 
+                SET fullname = :admin_fullname, email = :admin_email 
+                WHERE student_id = :admin_id
             ";
             $statement = $conn->prepare($query);
             $result = $statement->execute($data);
@@ -263,7 +263,7 @@
                         <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/students">Students</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/settings">Settings</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="<?= PROOT: ?>admin/profile">Hello <?= $admin_data['first']; ?>!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= PROOT; ?>admin/profile">Hello <?= $admin_data['first']; ?>!</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= PROOT; ?>admin/logout">
                                 Logout
