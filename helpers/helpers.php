@@ -374,7 +374,7 @@ function get_complaint_per_student($student_id) {
 		      <th scope="col">Category</th>
 		      <th scope="col">Event date</th>
 		      <th scope="col">Content</th>
-		      <th scope="col">Comment</th>
+		      <th scope="col">Admin Comment</th>
 		      <th scope="col">Status</th>
 		      <th scope="col"></th>
 		    </tr>
@@ -424,7 +424,7 @@ function get_complaint_per_student($student_id) {
 				    <td>'.ucwords($row["category"]).'</td>
 				    <td>'.pretty_date_only($row["complaint_date"]).'</td>
 				    <td>' . substr($row["complaint_message"], 0, 10) . ' ...</td>
-				    <td>' . substr($row["complaint_comment"], 0, 10) . ' ...</td>
+				    <td>' . substr($row["admin_comment"], 0, 10) . ' ...</td>
 				    <td>
 				    	<span class="badge bg-'.$status_bg.'">'.$status.'</span>
 				    	' . $comment . '
@@ -447,9 +447,11 @@ function get_complaint_per_student($student_id) {
 					      		<br>
 					      		Status: <span class="badge bg-'.$status_bg.'">'.$status.'</span>
 					      		<br>
-					      		Comment: <span>'.$row["complaint_comment"].'</span>
+					      		Your comment: <span>'.$row["complaint_comment"].'</span>
 					      		<hr>
 					        	' . nl2br($row['complaint_message']) . '
+					        	<hr>
+					        	Admin comment: <span>'.$row["admin_comment"].'</span>
 					      	</div>
 					      	<div class="modal-footer">
 					        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
