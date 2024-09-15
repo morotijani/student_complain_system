@@ -421,6 +421,8 @@
                                 <br>
                                 Status: <span class="badge bg-<?= $status_bg ?>"><?= $status ?></span>
                                 <br>
+                                Comments: <span><?= $row_view[0]['complaint_comment']; ?></span>
+                                <br>
                                 <hr>
                                 <?= $row_view[0]['complaint_message']; ?>
                             </p>
@@ -525,6 +527,7 @@
                             <th>ID</th>
                             <th>Category</th>
                             <th>Content</th>
+                            <th>Comment</th>
                             <th>Date Added</th>
                             <th>By</th>
                             <th>Status</th>
@@ -554,6 +557,7 @@
                                 </td>
                                 <td><?= ucwords($row['category']); ?></td>
                                 <td><?= substr($row['complaint_message'], 0, 10); ?>...</td>
+                                <td><?= substr($row['complaint_comment'], 0, 10); ?>...</td>
                                 <td><?= pretty_date($row['createdAt']); ?></td>
                                 <td><?= ucwords($row['fullname']); ?></td>
                                 <td><span class="badge bg-<?= $status_bg ?>"><?= $status ?></td>

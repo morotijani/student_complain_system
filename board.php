@@ -27,9 +27,13 @@ if (isset($_POST['sub_comment'])) {
     // code...
     $comment = sanitize($_POST['comment_message']);
 
-    $sql = "UPDATE complaints SET complaint_comment WHERE complaint_id = ?";
+    $sql = "UPDATE complaints SET complaint_comment = ? WHERE complaint_id = ?";
     $statement = $conn->prepare($sql);
     $result = $statement->execute([$comment, $id]);
+    if ($result) {
+        // code...
+        $_SESSION['flash_success'] = "Comment sent successfully!";
+    }
 }
 
 // Delete complaint
@@ -299,14 +303,15 @@ if (isset($_POST['submit'])) {
         
         <div class="p-5 text-center bg-body-tertiary rounded-3">
         <?php if (isset($_GET['comment'])): ?>
-            <h1 class="text-body-emphasis mb-3">commenting on complaint with id <?= $id; ?></h1>
+            <h1 class="text-body-emphasis mb-3">commenting on complaint with id: <?= $id; ?></h1>
             <form method="POST">
                 <div class="mb-2">
                     <textarea class="form-control" id="comment_message" rows="5" placeholder="Type comment here ..." name="comment_message"></textarea>
                 </div>
-                <div class="">
-                    <input type="submit" name="sub_comment" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" value="Comment">
+                <div class="mb-1">
+                    <input type="submit" name="sub_comment" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" value="Send comment">
                 </div>
+                <a href="board.php">Cancel</a>
             </form>
         <?php else: ?>
             <h1 class="text-body-emphasis">you've made <?= count_complaints_per_students($user_id); ?> complaints</h1>
