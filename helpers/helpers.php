@@ -401,6 +401,7 @@ function get_complaint_per_student($student_id) {
 		foreach ($resutl as $row) {
 			$status = "new";
 	        $status_bg = "warning";
+	        $comment = '';
 	        if ($row['complaint_status'] == 1) {
 	            // code...
 	            $status = "processing";
@@ -408,6 +409,10 @@ function get_complaint_per_student($student_id) {
 	        } else if ($row['complaint_status'] == 2) {
 	            $status = "Done";
 	            $status_bg = "success";
+	            $comment = "
+	            	<br>
+	            	<a href='?comment=".$row['complaint_id']."' class='badge bg-dark'>Comment ...</a>
+	            ";
 	        }
 
 			$output .= '
@@ -418,7 +423,10 @@ function get_complaint_per_student($student_id) {
 				    <td>'.ucwords($row["category"]).'</td>
 				    <td>'.pretty_date_only($row["complaint_date"]).'</td>
 				    <td>' . substr($row["complaint_message"], 0, 10) . ' ...</td>
-				    <td><span class="badge bg-'.$status_bg.'">'.$status.'</span></td>
+				    <td>
+				    	<span class="badge bg-'.$status_bg.'">'.$status.'</span>
+				    	' . $comment . '
+				    </td>
 				    <td><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#complaintModal_'.$row["cid"].'">view</a></td>
 				</tr>
 				   

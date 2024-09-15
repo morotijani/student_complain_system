@@ -6,6 +6,32 @@ if (!student_is_logged_in()) {
     student_login_redirect();
 }
 
+if (isset($_GET['comment'])) {
+    $id = $_GET['comment'];
+
+    $sql = "SELECT * FROM complaints WHERE complaint_id = ?";
+    $statement = $conn->prepare($sql);
+    $statement->execute([$id]);
+    $row_count = $statement->rowCount();
+    $c_row = $statement->fetchAll();
+
+    if ($row_count > 0) {
+        // code...
+
+    } else {
+        redirect(PROOT . 'baord');
+    }
+}
+
+if (isset($_POST['sub_comment'])) {
+    // code...
+    $comment = sanitize($_POST['comment_message']);
+
+    $sql = "UPDATE complaints SET complaint_comment WHERE complaint_id = ?";
+    $statement = $conn->prepare($sql);
+    $result = $statement->execute([$comment, $id]);
+}
+
 // Delete complaint
 if (isset($_GET['delete']) && !empty($_GET['delete'])) {
     // code...
@@ -270,13 +296,25 @@ if (isset($_POST['submit'])) {
               <small>CKT-UTAS</small>
             </div>
         </div>
-            
+        
         <div class="p-5 text-center bg-body-tertiary rounded-3">
+        <?php if (isset($_GET['comment'])): ?>
+            <h1 class="text-body-emphasis mb-3">commenting on complaint with id <?= $id; ?></h1>
+            <form method="POST">
+                <div class="mb-2">
+                    <textarea class="form-control" id="comment_message" rows="5" placeholder="Type comment here ..." name="comment_message"></textarea>
+                </div>
+                <div class="">
+                    <input type="submit" name="sub_comment" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" value="Comment">
+                </div>
+            </form>
+        <?php else: ?>
             <h1 class="text-body-emphasis">you've made <?= count_complaints_per_students($user_id); ?> complaints</h1>
             <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Lodge complaint
                 <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"/></svg>
             </button>
+        <?php endif ?> 
         </div>
 
         <div class="my-3 p-3 bg-body rounded shadow-sm">
